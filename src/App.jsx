@@ -10,6 +10,7 @@ import DashboardScreen from "./screens/DashboardScreen";
 import FinancesScreen from "./screens/FinancesScreen";
 import DocumentsScreen from "./screens/DocumentsScreen";
 import VacationsScreen from "./screens/VacationsScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -89,6 +90,20 @@ export default function App() {
               tabBarIcon: ({ focused, color, size }) => (
                 <Ionicons
                   name={focused ? "calendar" : "calendar-outline"}
+                  size={size}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{
+              title: "Профил",
+              tabBarIcon: ({ focused, color, size }) => (
+                <Ionicons
+                  name={focused ? "person" : "person-outline"}
                   size={size}
                   color={color}
                 />
