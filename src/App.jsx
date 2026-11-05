@@ -1,14 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { colors } from './theme';
 
 import DashboardScreen from './screens/DashboardScreen';
 import FinancesScreen from './screens/FinancesScreen';
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
     return (
@@ -16,27 +17,47 @@ export default function App() {
             <StatusBar style="dark" />
 
             <NavigationContainer>
-                <Stack.Navigator
+                <Tab.Navigator
                     initialRouteName="Dashboard"
                     screenOptions={{
                         headerStyle: { backgroundColor: colors.background },
                         headerTintColor: colors.text,
                         headerTitleStyle: { fontWeight: 'bold' },
                         headerShadowVisible: false,
-                        contentStyle: { backgroundColor: colors.background },
+                        sceneStyle: { backgroundColor: colors.background },
+                        tabBarActiveTintColor: colors.primary,
+                        tabBarInactiveTintColor: colors.textMuted,
+                        tabBarStyle: {
+                            backgroundColor: colors.card,
+                            borderTopColor: colors.border,
+                        },
+                        tabBarLabelStyle: {
+                            fontSize: 11,
+                            fontWeight: '600',
+                        },
                     }}
                 >
-                    <Stack.Screen
+                    <Tab.Screen
                         name="Dashboard"
                         component={DashboardScreen}
-                        options={{ title: 'Табло' }}
+                        options={{
+                            title: 'Табло',
+                            tabBarIcon: ({ focused, color, size }) => (
+                                <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+                            ),
+                        }}
                     />
-                    <Stack.Screen
+                    <Tab.Screen
                         name="Finances"
                         component={FinancesScreen}
-                        options={{ title: 'Финанси' }}
+                        options={{
+                            title: 'Финанси',
+                            tabBarIcon: ({ focused, color, size }) => (
+                                <Ionicons name={focused ? 'wallet' : 'wallet-outline'} size={size} color={color} />
+                            ),
+                        }}
                     />
-                </Stack.Navigator>
+                </Tab.Navigator>
             </NavigationContainer>
         </SafeAreaProvider>
     );
