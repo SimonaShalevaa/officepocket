@@ -9,6 +9,7 @@ import { colors } from "./theme";
 import DashboardScreen from "./screens/DashboardScreen";
 import FinancesScreen from "./screens/FinancesScreen";
 import DocumentsScreen from "./screens/DocumentsScreen";
+import VacationsScreen from "./screens/VacationsScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,7 +19,6 @@ export default function App() {
       <StatusBar style="dark" />
 
       <NavigationContainer>
-        
         <Tab.Navigator
           initialRouteName="Dashboard"
           screenOptions={{
@@ -68,20 +68,33 @@ export default function App() {
             }}
           />
           <Tab.Screen
-          name="Documents"
-          component={DocumentsScreen}
-          options={{
-            title: "Документи",
-            tabBarIcon: ({ focused, color, size }) => (
-              <Ionicons
-                name={focused ? "document-text" : "document-text-outline"}
-                size={size}
-                color={color}
-              />
-            ),
-          }}
-        />
-
+            name="Documents"
+            component={DocumentsScreen}
+            options={{
+              title: "Документи",
+              tabBarIcon: ({ focused, color, size }) => (
+                <Ionicons
+                  name={focused ? "document-text" : "document-text-outline"}
+                  size={size}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Vacations"
+            component={VacationsScreen}
+            options={{
+              title: "Отпуски",
+              tabBarIcon: ({ focused, color, size }) => (
+                <Ionicons
+                  name={focused ? "calendar" : "calendar-outline"}
+                  size={size}
+                  color={color}
+                />
+              ),
+            }}
+          />
         </Tab.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
