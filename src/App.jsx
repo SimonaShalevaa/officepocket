@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -8,11 +9,39 @@ import { colors } from "./theme";
 
 import DashboardScreen from "./screens/DashboardScreen";
 import FinancesScreen from "./screens/FinancesScreen";
+import TransactionDetailsScreen from "./screens/TransactionDetailsScreen";
 import DocumentsScreen from "./screens/DocumentsScreen";
 import VacationsScreen from "./screens/VacationsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function FinancesNavigator() {
+  return (
+    <Stack.Navigator
+      initialRouteName="FinancesList"
+      screenOptions={{
+        headerStyle: { backgroundColor: colors.background },
+        headerTintColor: colors.text,
+        headerTitleStyle: { fontWeight: "bold" },
+        headerShadowVisible: false,
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
+      <Stack.Screen
+        name="FinancesList"
+        component={FinancesScreen}
+        options={{ title: "Финанси" }}
+      />
+      <Stack.Screen
+        name="TransactionDetails"
+        component={TransactionDetailsScreen}
+        options={{ title: "Детайли" }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
   return (
@@ -56,9 +85,10 @@ export default function App() {
           />
           <Tab.Screen
             name="Finances"
-            component={FinancesScreen}
+            component={FinancesNavigator}
             options={{
               title: "Финанси",
+              headerShown: false,
               tabBarIcon: ({ focused, color, size }) => (
                 <Ionicons
                   name={focused ? "wallet" : "wallet-outline"}
