@@ -1,12 +1,35 @@
 import { StyleSheet, View, Text } from "react-native";
 
 import { colors } from "../theme";
+import { transactions } from "../data";
+import { typeLabels, formatAmount, formatDate } from "../utils/formatUtils";
 
-export default function TransactionDetailsScreen() {
+export default function TransactionDetailsScreen({ route }) {
+  const { transactionId } = route.params;
+  const transaction = transactions.find((item) => item.id === transactionId);
+
+  if (!transaction) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.notFound}>Записът не е намерен</Text>
+      </View>
+    );
+  }
+
+  const isIncome = transaction.type === "income";
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Детайли за запис</Text>
-      <Text style={styles.subtitle}>Тук ще е информацията за избрания запис</Text>
+      <Text style={[styles.amount, isIncome && styles.amountIncome]}>
+        {formatAmount(transaction.amount, transaction.type)}
+      </Text>
+      <Text style={styles.meta}>
+        {typeLabels[transaction.type]} · {transaction.category} ·{" "}
+        {formatDate(transaction.date)}
+      </Text>
+      <Text style={[styles.status, !transaction.isPaid && styles.statusPending]}>
+        {transaction.isPaid ? "ПЛАТЕНО" : "ЧАКАЩО"}
+      </Text>
     </View>
   );
 }
@@ -17,17 +40,31 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
+    gap: 8,
     paddingHorizontal: 24,
   },
-  title: {
+  amount: {
     color: colors.text,
-    fontSize: 28,
+    fontSize: 34,
     fontWeight: "bold",
   },
-  subtitle: {
+  amountIncome: {
+    color: colors.primary,
+  },
+  meta: {
     color: colors.textMuted,
     fontSize: 15,
-    textAlign: "center",
+  },
+  status: {
+    color: colors.primary,
+    fontSize: 13,
+    fontWeight: "bold",
+  },
+  statusPending: {
+    color: colors.pending,
+  },
+  notFound: {
+    color: colors.textMuted,
+    fontSize: 16,
   },
 });

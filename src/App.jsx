@@ -37,7 +37,7 @@ function FinancesNavigator() {
       <Stack.Screen
         name="TransactionDetails"
         component={TransactionDetailsScreen}
-        options={{ title: "Детайли" }}
+        options={({ route }) => ({ title: route.params.title })}
       />
     </Stack.Navigator>
   );

@@ -1,9 +1,11 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { colors } from "../theme";
 import { typeLabels, formatAmount, formatDate } from "../utils/formatUtils";
 
 export default function TransactionItem({
+  id,
   title,
   type,
   category,
@@ -11,10 +13,18 @@ export default function TransactionItem({
   date,
   isPaid,
 }) {
+  const navigation = useNavigation();
   const isIncome = type === "income";
 
+  const pressHandler = () => {
+    navigation.navigate("TransactionDetails", { transactionId: id, title });
+  };
+
   return (
-    <View style={styles.card}>
+    <Pressable
+      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+      onPress={pressHandler}
+    >
       <View style={styles.info}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.meta}>
@@ -30,7 +40,7 @@ export default function TransactionItem({
           {isPaid ? "ПЛАТЕНО" : "ЧАКАЩО"}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -43,6 +53,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 12,
+  },
+  cardPressed: {
+    opacity: 0.6,
   },
   info: {
     flex: 1,
