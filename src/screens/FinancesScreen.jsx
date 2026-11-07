@@ -1,5 +1,4 @@
 import { StyleSheet, ScrollView, Text } from "react-native";
-import { Button } from "@react-navigation/elements";
 
 import { colors } from "../theme";
 import { transactions } from "../data";
@@ -14,15 +13,6 @@ export default function FinancesScreen() {
       {transactions.map((transaction) => (
         <TransactionItem key={transaction.id} {...transaction} />
       ))}
-
-      <Button
-        screen="TransactionDetails"
-        variant="filled"
-        color={colors.primary}
-        style={styles.button}
-      >
-        Към детайли
-      </Button>
     </ScrollView>
   );
 }
@@ -36,8 +26,5 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 14,
     marginBottom: 4,
-  },
-  button: {
-    marginTop: 12,
   },
 });
