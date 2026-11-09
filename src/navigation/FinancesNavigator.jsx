@@ -1,5 +1,9 @@
+import { StyleSheet } from "react-native";
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Header, getHeaderTitle } from "@react-navigation/elements";
+import { Link } from "@react-navigation/native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { colors } from "../theme";
 
@@ -30,7 +34,18 @@ export default function FinancesNavigator() {
       <Stack.Screen
         name="FinancesList"
         component={FinancesScreen}
-        options={{ title: "Финанси" }}
+        options={{
+          title: "Финанси",
+          headerRight: () => (
+            <Link
+              screen="AddTransaction"
+              accessibilityLabel="Нов запис"
+              style={styles.addButton}
+            >
+              <Ionicons name="add-circle" size={32} color={colors.primary} />
+            </Link>
+          ),
+        }}
       />
       <Stack.Screen
         name="TransactionDetails"
@@ -40,3 +55,9 @@ export default function FinancesNavigator() {
     </Stack.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  addButton: {
+    marginRight: 16,
+  },
+});
