@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
-import TabsNavigator from "./navigation/TabsNavigator";
+import RootNavigator from "./navigation/RootNavigator";
 
 export default function App() {
   return (
@@ -10,7 +10,7 @@ export default function App() {
       <StatusBar style="dark" />
 
       <NavigationContainer>
-        <TabsNavigator />
+        <RootNavigator />
       </NavigationContainer>
     </SafeAreaProvider>
   );
