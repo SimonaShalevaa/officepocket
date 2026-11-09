@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Header, getHeaderTitle } from "@react-navigation/elements";
 
 import { colors } from "../theme";
 
@@ -12,6 +13,13 @@ export default function FinancesNavigator() {
     <Stack.Navigator
       initialRouteName="FinancesList"
       screenOptions={{
+        header: ({ options, route, back }) => (
+          <Header
+            {...options}
+            title={getHeaderTitle(options, route.name)}
+            back={back}
+          />
+        ),
         headerStyle: { backgroundColor: colors.background },
         headerTintColor: colors.text,
         headerTitleStyle: { fontWeight: "bold" },
