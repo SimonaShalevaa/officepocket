@@ -89,6 +89,7 @@ export default function App() {
             options={{
               title: "Финанси",
               headerShown: false,
+              popToTopOnBlur: true,
               tabBarIcon: ({ focused, color, size }) => (
                 <Ionicons
                   name={focused ? "wallet" : "wallet-outline"}
