@@ -1,4 +1,5 @@
 import { StyleSheet, View, Text } from "react-native";
+import { Button } from "@react-navigation/elements";
 
 import { colors } from "../theme";
 
@@ -9,6 +10,10 @@ export default function ProfileScreen() {
       <Text style={styles.subtitle}>
         Тук ще са данните ти и бутонът за изход
       </Text>
+
+      <Button screen="Auth" variant="tinted" color={colors.primary}>
+        Към входа (временно)
+      </Button>
     </View>
   );
 }
@@ -31,5 +36,6 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 15,
     textAlign: "center",
+    marginBottom: 12,
   },
 });

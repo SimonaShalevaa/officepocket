@@ -5,6 +5,7 @@ import { colors } from "../theme";
 
 import TabsNavigator from "./TabsNavigator";
 import AddTransactionScreen from "../screens/AddTransactionScreen";
+import AuthNavigator from "./AuthNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,11 @@ export default function RootNavigator() {
         name="AddTransaction"
         component={AddTransactionScreen}
         options={{ title: "Нов запис" }}
+      />
+      <Stack.Screen
+        name="Auth"
+        component={AuthNavigator}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
