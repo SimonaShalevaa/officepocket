@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useLayoutEffect } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TextInput,
+  Pressable,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -14,9 +15,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors } from "../theme";
 
-import AppButton from "../components/AppButton";
+import TypeSelector from "../components/TypeSelector";
+import { typeLabels } from "../utils/formatUtils";
 
 export default function AddTransactionScreen({ navigation }) {
+  const [type, setType] = useState("expense");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -24,10 +27,27 @@ export default function AddTransactionScreen({ navigation }) {
   const { bottom } = useSafeAreaInsets();
 
   const saveHandler = () => {
-    Alert.alert("Нов запис", `${title}\n${amount} €`, [
+    Alert.alert("Нов запис", `${typeLabels[type]}\n${title}\n${amount} €`, [
       { text: "OK", onPress: () => navigation.goBack() },
     ]);
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          style={({ pressed }) => [
+            styles.saveButton,
+            pressed && styles.saveButtonPressed,
+          ]}
+          onPress={saveHandler}
+          hitSlop={10}
+        >
+          <Text style={styles.saveText}>Запази</Text>
+        </Pressable>
+      ),
+    });
+  }, [navigation, type, title, amount]);
 
   return (
     <KeyboardAvoidingView
@@ -39,6 +59,11 @@ export default function AddTransactionScreen({ navigation }) {
         contentContainerStyle={[styles.content, { paddingBottom: bottom + 16 }]}
         keyboardShouldPersistTaps="handled"
       >
+        <View style={styles.field}>
+          <Text style={styles.label}>Тип</Text>
+          <TypeSelector value={type} onChange={setType} />
+        </View>
+
         <View style={styles.field}>
           <Text style={styles.label}>Описание</Text>
           <TextInput
@@ -61,10 +86,6 @@ export default function AddTransactionScreen({ navigation }) {
             keyboardType="decimal-pad"
           />
         </View>
-
-        <View style={styles.spacer} />
-
-        <AppButton title="Запази" onPress={saveHandler} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -75,7 +96,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    flexGrow: 1,
     padding: 20,
     gap: 18,
   },
@@ -97,7 +117,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.text,
   },
-  spacer: {
-    flex: 1,
+  saveButton: {
+    marginRight: 16,
+    backgroundColor: colors.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+  },
+  saveButtonPressed: {
+    opacity: 0.8,
+  },
+  saveText: {
+    color: colors.white,
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });
