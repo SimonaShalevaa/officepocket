@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Switch,
 } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,14 +23,17 @@ export default function AddTransactionScreen({ navigation }) {
   const [type, setType] = useState("expense");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
+  const [isPaid, setIsPaid] = useState(true);
 
   const headerHeight = useHeaderHeight();
   const { bottom } = useSafeAreaInsets();
 
   const saveHandler = () => {
-    Alert.alert("Нов запис", `${typeLabels[type]}\n${title}\n${amount} €`, [
-      { text: "OK", onPress: () => navigation.goBack() },
-    ]);
+    Alert.alert(
+      "Нов запис",
+      `${typeLabels[type]}\n${title}\n${amount} €\n${isPaid ? "Платено" : "Чакащо"}`,
+      [{ text: "OK", onPress: () => navigation.goBack() }],
+    );
   };
 
   useLayoutEffect(() => {
@@ -47,7 +51,7 @@ export default function AddTransactionScreen({ navigation }) {
         </Pressable>
       ),
     });
-  }, [navigation, type, title, amount]);
+  }, [navigation, type, title, amount, isPaid]);
 
   return (
     <KeyboardAvoidingView
@@ -86,6 +90,22 @@ export default function AddTransactionScreen({ navigation }) {
             keyboardType="decimal-pad"
           />
         </View>
+
+                <View style={styles.switchRow}>
+          <View style={styles.switchInfo}>
+            <Text style={styles.switchTitle}>Платено</Text>
+            <Text style={styles.switchSubtitle}>
+              Изключи, ако плащането предстои
+            </Text>
+          </View>
+          <Switch
+            value={isPaid}
+            onValueChange={setIsPaid}
+            trackColor={{ false: colors.border, true: colors.primary }}
+            thumbColor={colors.white}
+          />
+        </View>
+
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -116,6 +136,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     fontSize: 16,
     color: colors.text,
+  },
+    switchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.card,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 12,
+  },
+  switchInfo: {
+    flex: 1,
+  },
+  switchTitle: {
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  switchSubtitle: {
+    color: colors.textMuted,
+    fontSize: 12,
+    marginTop: 2,
   },
   saveButton: {
     marginRight: 16,
