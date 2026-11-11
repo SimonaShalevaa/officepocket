@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { StyleSheet, Alert } from "react-native";
+import { StyleSheet, Text, Alert } from "react-native";
+import { Link } from "@react-navigation/native";
+
+import { colors } from "../theme";
 
 import FormField from "../components/FormField";
 import AppButton from "../components/AppButton";
@@ -17,6 +20,14 @@ export default function LoginScreen() {
     <AuthLayout
       title="Добре дошли отново"
       subtitle="Влезте, за да видите финансите и документите на фирмата."
+      footer={
+        <>
+          <Text style={styles.footerText}>Нямате профил? </Text>
+          <Link screen="Register" style={styles.link}>
+            Регистрация
+          </Link>
+        </>
+      }
     >
       <FormField
         label="Имейл"
@@ -43,5 +54,14 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   button: {
     marginTop: 8,
+  },
+  footerText: {
+    color: colors.textMuted,
+    fontSize: 15,
+  },
+  link: {
+    color: colors.primary,
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });
