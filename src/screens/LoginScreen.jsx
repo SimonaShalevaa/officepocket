@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { StyleSheet, Text, Alert } from "react-native";
 import { Link } from "@react-navigation/native";
 
@@ -11,6 +11,8 @@ import AuthLayout from "../components/AuthLayout";
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const passwordRef = useRef(null);
 
   const loginHandler = () => {
     Alert.alert("Вход", email);
@@ -37,13 +39,19 @@ export default function LoginScreen() {
         keyboardType="email-address"
         autoCapitalize="none"
         autoComplete="email"
+        returnKeyType="next"
+        submitBehavior="submit"
+        onSubmitEditing={() => passwordRef.current?.focus()}
       />
       <FormField
+        ref={passwordRef}
         label="Парола"
         value={password}
         onChangeText={setPassword}
         placeholder="Поне 6 символа"
         secureTextEntry
+        returnKeyType="done"
+        onSubmitEditing={loginHandler}
       />
 
       <AppButton title="Вход" onPress={loginHandler} style={styles.button} />

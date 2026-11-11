@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { StyleSheet, Text, Alert } from "react-native";
-import { Link } from "@react-navigation/native";
-import { CommonActions } from "@react-navigation/native";
+import { Link, CommonActions } from "@react-navigation/native";
 
 import { colors } from "../theme";
 
@@ -14,6 +13,10 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
 
   const registerHandler = () => {
     Alert.alert("Регистрация", `${name}\n${email}`);
@@ -39,8 +42,12 @@ export default function RegisterScreen() {
         placeholder="Симона Шалева"
         autoCapitalize="words"
         autoComplete="name"
+        returnKeyType="next"
+        submitBehavior="submit"
+        onSubmitEditing={() => emailRef.current?.focus()}
       />
       <FormField
+        ref={emailRef}
         label="Имейл"
         value={email}
         onChangeText={setEmail}
@@ -48,20 +55,30 @@ export default function RegisterScreen() {
         keyboardType="email-address"
         autoCapitalize="none"
         autoComplete="email"
+        returnKeyType="next"
+        submitBehavior="submit"
+        onSubmitEditing={() => passwordRef.current?.focus()}
       />
       <FormField
+        ref={passwordRef}
         label="Парола"
         value={password}
         onChangeText={setPassword}
         placeholder="Поне 6 символа"
         secureTextEntry
+        returnKeyType="next"
+        submitBehavior="submit"
+        onSubmitEditing={() => confirmPasswordRef.current?.focus()}
       />
       <FormField
+        ref={confirmPasswordRef}
         label="Повторете паролата"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         placeholder="Същата парола"
         secureTextEntry
+        returnKeyType="done"
+        onSubmitEditing={registerHandler}
       />
 
       <AppButton

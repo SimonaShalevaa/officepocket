@@ -1,21 +1,11 @@
-import { useState, useLayoutEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-  Switch,
-} from "react-native";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { useState, useRef, useLayoutEffect } from "react";
+import { StyleSheet, View, Text, Pressable, Alert, Switch } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors } from "../theme";
 
+import FormField from "../components/FormField";
 import TypeSelector from "../components/TypeSelector";
 import { typeLabels } from "../utils/formatUtils";
 
@@ -25,7 +15,7 @@ export default function AddTransactionScreen({ navigation }) {
   const [amount, setAmount] = useState("");
   const [isPaid, setIsPaid] = useState(true);
 
-  const headerHeight = useHeaderHeight();
+  const amountRef = useRef(null);
   const { bottom } = useSafeAreaInsets();
 
   const saveHandler = () => {
@@ -54,67 +44,54 @@ export default function AddTransactionScreen({ navigation }) {
   }, [navigation, type, title, amount, isPaid]);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? headerHeight : 0}
+    <KeyboardAwareScrollView
+      contentContainerStyle={[styles.content, { paddingBottom: bottom + 16 }]}
+      keyboardShouldPersistTaps="handled"
+      bottomOffset={24}
     >
-      <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: bottom + 16 }]}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.field}>
-          <Text style={styles.label}>Тип</Text>
-          <TypeSelector value={type} onChange={setType} />
-        </View>
+      <View style={styles.field}>
+        <Text style={styles.label}>Тип</Text>
+        <TypeSelector value={type} onChange={setType} />
+      </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Описание</Text>
-          <TextInput
-            style={styles.input}
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Канцеларски материали"
-            placeholderTextColor={colors.textMuted}
-          />
-        </View>
+      <FormField
+        label="Описание"
+        value={title}
+        onChangeText={setTitle}
+        placeholder="Канцеларски материали"
+        returnKeyType="next"
+        submitBehavior="submit"
+        onSubmitEditing={() => amountRef.current?.focus()}
+      />
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Сума (€)</Text>
-          <TextInput
-            style={styles.input}
-            value={amount}
-            onChangeText={setAmount}
-            placeholder="0,00"
-            placeholderTextColor={colors.textMuted}
-            keyboardType="decimal-pad"
-          />
-        </View>
+      <FormField
+        ref={amountRef}
+        label="Сума (€)"
+        value={amount}
+        onChangeText={setAmount}
+        placeholder="0,00"
+        keyboardType="decimal-pad"
+      />
 
-                <View style={styles.switchRow}>
-          <View style={styles.switchInfo}>
-            <Text style={styles.switchTitle}>Платено</Text>
-            <Text style={styles.switchSubtitle}>
-              Изключи, ако плащането предстои
-            </Text>
-          </View>
-          <Switch
-            value={isPaid}
-            onValueChange={setIsPaid}
-            trackColor={{ false: colors.border, true: colors.primary }}
-            thumbColor={colors.white}
-          />
+      <View style={styles.switchRow}>
+        <View style={styles.switchInfo}>
+          <Text style={styles.switchTitle}>Платено</Text>
+          <Text style={styles.switchSubtitle}>
+            Изключи, ако плащането предстои
+          </Text>
         </View>
-
-      </ScrollView>
-    </KeyboardAvoidingView>
+        <Switch
+          value={isPaid}
+          onValueChange={setIsPaid}
+          trackColor={{ false: colors.border, true: colors.primary }}
+          thumbColor={colors.white}
+        />
+      </View>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
   content: {
     padding: 20,
     gap: 18,
@@ -127,17 +104,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
   },
-  input: {
-    height: 52,
-    backgroundColor: colors.card,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: colors.text,
-  },
-    switchRow: {
+  switchRow: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.card,

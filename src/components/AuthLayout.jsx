@@ -1,13 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-} from "react-native";
+import { StyleSheet, View, Text } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -15,52 +7,20 @@ import { colors } from "../theme";
 
 export default function AuthLayout({ title, subtitle, children, footer }) {
   const { top, bottom } = useSafeAreaInsets();
-  const scrollRef = useRef(null);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      setIsKeyboardVisible(true);
-    });
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-      setIsKeyboardVisible(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
-
-  const scrollToFormHandler = () => {
-    if (isKeyboardVisible) {
-      scrollRef.current?.scrollToEnd({ animated: true });
-    }
-  };
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.flex, { paddingTop: top }]}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        ref={scrollRef}
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: isKeyboardVisible ? 16 : bottom + 24 },
-        ]}
+    <View style={[styles.flex, { paddingTop: top }]}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={[styles.content, { paddingBottom: bottom + 24 }]}
         keyboardShouldPersistTaps="handled"
-        onLayout={scrollToFormHandler}
-        onContentSizeChange={scrollToFormHandler}
+        bottomOffset={96}
       >
-        {!isKeyboardVisible && (
-          <View style={styles.brand}>
-            <View style={styles.logo}>
-              <Ionicons name="briefcase-outline" size={26} color={colors.white} />
-            </View>
-            <Text style={styles.brandName}>OfficePocket</Text>
+        <View style={styles.brand}>
+          <View style={styles.logo}>
+            <Ionicons name="briefcase-outline" size={26} color={colors.white} />
           </View>
-        )}
+          <Text style={styles.brandName}>OfficePocket</Text>
+        </View>
 
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>
@@ -68,8 +28,8 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
         <View style={styles.form}>{children}</View>
 
         {footer && <View style={styles.footer}>{footer}</View>}
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    </View>
   );
 }
 
