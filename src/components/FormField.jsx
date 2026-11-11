@@ -7,11 +7,11 @@ export default function FormField({ label, error, ...inputProps }) {
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
-        style={[styles.input, error && styles.inputError]}
+        style={[styles.input, !!error && styles.inputError]}
         placeholderTextColor={colors.textMuted}
         {...inputProps}
       />
-      {error && <Text style={styles.error}>{error}</Text>}
+      {!!error && <Text style={styles.error}>{error}</Text>}
     </View>
   );
 }

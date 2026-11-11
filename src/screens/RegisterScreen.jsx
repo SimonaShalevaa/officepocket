@@ -4,6 +4,13 @@ import { Link, CommonActions } from "@react-navigation/native";
 
 import { colors } from "../theme";
 import { useAuthContext } from "../contexts/auth/AuthContext";
+import {
+  validateName,
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+  hasErrors,
+} from "../utils/validation";
 
 import FormField from "../components/FormField";
 import AppButton from "../components/AppButton";
@@ -14,6 +21,7 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({});
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -21,8 +29,26 @@ export default function RegisterScreen() {
 
   const { register } = useAuthContext();
 
+  const changeHandler = (setValue, field) => (text) => {
+    setValue(text);
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
+
   const registerHandler = () => {
-    register(name, email);
+    const newErrors = {
+      name: validateName(name),
+      email: validateEmail(email),
+      password: validatePassword(password),
+      confirmPassword: validateConfirmPassword(password, confirmPassword),
+    };
+
+    setErrors(newErrors);
+
+    if (hasErrors(newErrors)) {
+      return;
+    }
+
+    register(name.trim(), email.trim());
   };
 
   return (
@@ -41,7 +67,8 @@ export default function RegisterScreen() {
       <FormField
         label="Име"
         value={name}
-        onChangeText={setName}
+        onChangeText={changeHandler(setName, "name")}
+        error={errors.name}
         placeholder="Симона Шалева"
         autoCapitalize="words"
         autoComplete="name"
@@ -53,7 +80,8 @@ export default function RegisterScreen() {
         ref={emailRef}
         label="Имейл"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={changeHandler(setEmail, "email")}
+        error={errors.email}
         placeholder="name@firma.bg"
         keyboardType="email-address"
         autoCapitalize="none"
@@ -66,7 +94,8 @@ export default function RegisterScreen() {
         ref={passwordRef}
         label="Парола"
         value={password}
-        onChangeText={setPassword}
+        onChangeText={changeHandler(setPassword, "password")}
+        error={errors.password}
         placeholder="Поне 6 символа"
         secureTextEntry
         returnKeyType="next"
@@ -77,7 +106,8 @@ export default function RegisterScreen() {
         ref={confirmPasswordRef}
         label="Повторете паролата"
         value={confirmPassword}
-        onChangeText={setConfirmPassword}
+        onChangeText={changeHandler(setConfirmPassword, "confirmPassword")}
+        error={errors.confirmPassword}
         placeholder="Същата парола"
         secureTextEntry
         returnKeyType="done"

@@ -8,17 +8,44 @@ import { colors } from "../theme";
 import FormField from "../components/FormField";
 import TypeSelector from "../components/TypeSelector";
 import { typeLabels } from "../utils/formatUtils";
+import {
+  validateTitle,
+  validateAmount,
+  hasErrors,
+} from "../utils/validation";
 
 export default function AddTransactionScreen({ navigation }) {
   const [type, setType] = useState("expense");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [isPaid, setIsPaid] = useState(true);
+  const [errors, setErrors] = useState({});
 
   const amountRef = useRef(null);
   const { bottom } = useSafeAreaInsets();
 
+  const titleChangeHandler = (text) => {
+    setTitle(text);
+    setErrors((prev) => ({ ...prev, title: "" }));
+  };
+
+  const amountChangeHandler = (text) => {
+    setAmount(text);
+    setErrors((prev) => ({ ...prev, amount: "" }));
+  };
+
   const saveHandler = () => {
+    const newErrors = {
+      title: validateTitle(title),
+      amount: validateAmount(amount),
+    };
+
+    setErrors(newErrors);
+
+    if (hasErrors(newErrors)) {
+      return;
+    }
+
     Alert.alert(
       "Нов запис",
       `${typeLabels[type]}\n${title}\n${amount} €\n${isPaid ? "Платено" : "Чакащо"}`,
@@ -57,7 +84,8 @@ export default function AddTransactionScreen({ navigation }) {
       <FormField
         label="Описание"
         value={title}
-        onChangeText={setTitle}
+        onChangeText={titleChangeHandler}
+        error={errors.title}
         placeholder="Канцеларски материали"
         returnKeyType="next"
         submitBehavior="submit"
@@ -68,7 +96,8 @@ export default function AddTransactionScreen({ navigation }) {
         ref={amountRef}
         label="Сума (€)"
         value={amount}
-        onChangeText={setAmount}
+        onChangeText={amountChangeHandler}
+        error={errors.amount}
         placeholder="0,00"
         keyboardType="decimal-pad"
       />

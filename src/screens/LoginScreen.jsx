@@ -4,6 +4,11 @@ import { Link } from "@react-navigation/native";
 
 import { colors } from "../theme";
 import { useAuthContext } from "../contexts/auth/AuthContext";
+import {
+  validateEmail,
+  validatePassword,
+  hasErrors,
+} from "../utils/validation";
 
 import FormField from "../components/FormField";
 import AppButton from "../components/AppButton";
@@ -12,13 +17,35 @@ import AuthLayout from "../components/AuthLayout";
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
 
   const passwordRef = useRef(null);
 
   const { login } = useAuthContext();
 
+  const emailChangeHandler = (text) => {
+    setEmail(text);
+    setErrors((prev) => ({ ...prev, email: "" }));
+  };
+
+  const passwordChangeHandler = (text) => {
+    setPassword(text);
+    setErrors((prev) => ({ ...prev, password: "" }));
+  };
+
   const loginHandler = () => {
-    login(email);
+    const newErrors = {
+      email: validateEmail(email),
+      password: validatePassword(password),
+    };
+
+    setErrors(newErrors);
+
+    if (hasErrors(newErrors)) {
+      return;
+    }
+
+    login(email.trim());
   };
 
   return (
@@ -37,7 +64,8 @@ export default function LoginScreen() {
       <FormField
         label="Имейл"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={emailChangeHandler}
+        error={errors.email}
         placeholder="name@firma.bg"
         keyboardType="email-address"
         autoCapitalize="none"
@@ -50,7 +78,8 @@ export default function LoginScreen() {
         ref={passwordRef}
         label="Парола"
         value={password}
-        onChangeText={setPassword}
+        onChangeText={passwordChangeHandler}
+        error={errors.password}
         placeholder="Поне 6 символа"
         secureTextEntry
         returnKeyType="done"
