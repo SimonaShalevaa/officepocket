@@ -1,19 +1,30 @@
 import { StyleSheet, View, Text } from "react-native";
-import { Button } from "@react-navigation/elements";
 
 import { colors } from "../theme";
+import { useAuthContext } from "../contexts/auth/AuthContext";
+
+import AppButton from "../components/AppButton";
 
 export default function ProfileScreen() {
+  const { user, logout } = useAuthContext();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Профил</Text>
-      <Text style={styles.subtitle}>
-        Тук ще са данните ти и бутонът за изход
-      </Text>
+      <View style={styles.avatar}>
+        <Text style={styles.avatarText}>
+          {user.name.charAt(0).toUpperCase()}
+        </Text>
+      </View>
 
-      <Button screen="Auth" variant="tinted" color={colors.primary}>
-        Към входа (временно)
-      </Button>
+      <Text style={styles.name}>{user.name}</Text>
+      <Text style={styles.email}>{user.email}</Text>
+
+      <AppButton
+        title="Изход"
+        variant="outline"
+        onPress={logout}
+        style={styles.logoutButton}
+      />
     </View>
   );
 }
@@ -24,18 +35,34 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
     paddingHorizontal: 24,
   },
-  title: {
-    color: colors.text,
-    fontSize: 28,
+  avatar: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: colors.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
+  avatarText: {
+    color: colors.primary,
+    fontSize: 36,
     fontWeight: "bold",
   },
-  subtitle: {
+  name: {
+    color: colors.text,
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  email: {
     color: colors.textMuted,
     fontSize: 15,
-    textAlign: "center",
-    marginBottom: 12,
+    marginTop: 4,
+  },
+  logoutButton: {
+    alignSelf: "stretch",
+    marginTop: 32,
   },
 });

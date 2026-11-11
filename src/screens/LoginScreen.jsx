@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
-import { StyleSheet, Text, Alert } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { Link } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { useAuthContext } from "../contexts/auth/AuthContext";
 
 import FormField from "../components/FormField";
 import AppButton from "../components/AppButton";
@@ -14,8 +15,10 @@ export default function LoginScreen() {
 
   const passwordRef = useRef(null);
 
+  const { login } = useAuthContext();
+
   const loginHandler = () => {
-    Alert.alert("Вход", email);
+    login(email);
   };
 
   return (

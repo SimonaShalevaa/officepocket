@@ -2,14 +2,17 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Header, getHeaderTitle } from "@react-navigation/elements";
 
 import { colors } from "../theme";
+import { useAuthContext } from "../contexts/auth/AuthContext";
 
 import TabsNavigator from "./TabsNavigator";
-import AddTransactionScreen from "../screens/AddTransactionScreen";
 import AuthNavigator from "./AuthNavigator";
+import AddTransactionScreen from "../screens/AddTransactionScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
+  const { isAuthenticated } = useAuthContext();
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -27,21 +30,26 @@ export default function RootNavigator() {
         contentStyle: { backgroundColor: colors.background },
       }}
     >
-      <Stack.Screen
-        name="MainTabs"
-        component={TabsNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AddTransaction"
-        component={AddTransactionScreen}
-        options={{ title: "Нов запис" }}
-      />
-      <Stack.Screen
-        name="Auth"
-        component={AuthNavigator}
-        options={{ headerShown: false }}
-      />
+      {isAuthenticated ? (
+        <>
+          <Stack.Screen
+            name="MainTabs"
+            component={TabsNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="AddTransaction"
+            component={AddTransactionScreen}
+            options={{ title: "Нов запис" }}
+          />
+        </>
+      ) : (
+        <Stack.Screen
+          name="Auth"
+          component={AuthNavigator}
+          options={{ headerShown: false }}
+        />
+      )}
     </Stack.Navigator>
   );
 }

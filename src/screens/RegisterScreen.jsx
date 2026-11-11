@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
-import { StyleSheet, Text, Alert } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { Link, CommonActions } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { useAuthContext } from "../contexts/auth/AuthContext";
 
 import FormField from "../components/FormField";
 import AppButton from "../components/AppButton";
@@ -18,8 +19,10 @@ export default function RegisterScreen() {
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
 
+  const { register } = useAuthContext();
+
   const registerHandler = () => {
-    Alert.alert("Регистрация", `${name}\n${email}`);
+    register(name, email);
   };
 
   return (
