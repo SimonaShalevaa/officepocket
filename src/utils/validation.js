@@ -87,3 +87,11 @@ export function validateAmount(amount) {
 export function hasErrors(errors) {
   return Object.values(errors).some((error) => error !== "");
 }
+
+export function validateImage(imageUri) {
+  if (!imageUri) {
+    return "Добавете снимка на документа";
+  }
+
+  return "";
+}

@@ -3,10 +3,10 @@ import { StyleSheet, View, Pressable, Text } from "react-native";
 import { colors } from "../theme";
 import { typeLabels } from "../utils/formatUtils";
 
-export default function TypeSelector({ value, onChange }) {
+export default function TypeSelector({ value, onChange, labels = typeLabels }) {
   return (
     <View style={styles.container}>
-      {Object.entries(typeLabels).map(([type, label]) => (
+      {Object.entries(labels).map(([type, label]) => (
         <Pressable
           key={type}
           style={[styles.option, value === type && styles.optionActive]}

@@ -7,6 +7,7 @@ import { useAuthContext } from "../contexts/auth/AuthContext";
 import TabsNavigator from "./TabsNavigator";
 import AuthNavigator from "./AuthNavigator";
 import AddTransactionScreen from "../screens/AddTransactionScreen";
+import AddDocumentScreen from "../screens/AddDocumentScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,11 @@ export default function RootNavigator() {
             name="AddTransaction"
             component={AddTransactionScreen}
             options={{ title: "Нов запис" }}
+          />
+          <Stack.Screen
+            name="AddDocument"
+            component={AddDocumentScreen}
+            options={{ title: "Нов документ" }}
           />
         </>
       ) : (

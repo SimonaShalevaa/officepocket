@@ -1,4 +1,6 @@
+import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Link } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { colors } from "../theme";
@@ -69,6 +71,15 @@ export default function TabsNavigator() {
         component={DocumentsScreen}
         options={{
           title: "Документи",
+          headerRight: () => (
+            <Link
+              screen="AddDocument"
+              accessibilityLabel="Нов документ"
+              style={styles.addButton}
+            >
+              <Ionicons name="add-circle" size={32} color={colors.primary} />
+            </Link>
+          ),
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? "document-text" : "document-text-outline"}
@@ -109,3 +120,9 @@ export default function TabsNavigator() {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  addButton: {
+    marginRight: 16,
+  },
+});
