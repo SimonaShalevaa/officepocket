@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, Alert } from "react-native";
 import { Link, CommonActions } from "@react-navigation/native";
 
 import { colors } from "../theme";
@@ -11,6 +11,7 @@ import {
   validateConfirmPassword,
   hasErrors,
 } from "../utils/validation";
+import { getAuthErrorMessage } from "../utils/authErrors";
 
 import FormField from "../components/FormField";
 import AppButton from "../components/AppButton";
@@ -22,6 +23,7 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -34,7 +36,7 @@ export default function RegisterScreen() {
     setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const registerHandler = () => {
+  const registerHandler = async () => {
     const newErrors = {
       name: validateName(name),
       email: validateEmail(email),
@@ -48,7 +50,14 @@ export default function RegisterScreen() {
       return;
     }
 
-    register(name.trim(), email.trim());
+    setIsLoading(true);
+
+    try {
+      await register(name.trim(), email.trim(), password);
+    } catch (error) {
+      Alert.alert("Неуспешна регистрация", getAuthErrorMessage(error));
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -115,8 +124,9 @@ export default function RegisterScreen() {
       />
 
       <AppButton
-        title="Регистрация"
+        title={isLoading ? "Регистриране..." : "Регистрация"}
         onPress={registerHandler}
+        disabled={isLoading}
         style={styles.button}
       />
     </AuthLayout>

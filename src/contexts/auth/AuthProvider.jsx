@@ -1,19 +1,29 @@
 import { useState } from "react";
 
 import { AuthContext } from "./AuthContext";
+import { authApi } from "../../api";
+import { setAccessToken } from "../../api/api";
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  const login = (email) => {
-    setUser({ name: email.split("@")[0], email });
+  const saveSession = (session) => {
+    setAccessToken(session.accessToken);
+    setUser(session.user);
   };
 
-  const register = (name, email) => {
-    setUser({ name, email });
+  const login = async (email, password) => {
+    const session = await authApi.login(email, password);
+    saveSession(session);
+  };
+
+  const register = async (name, email, password) => {
+    const session = await authApi.register(name, email, password);
+    saveSession(session);
   };
 
   const logout = () => {
+    setAccessToken(null);
     setUser(null);
   };
 

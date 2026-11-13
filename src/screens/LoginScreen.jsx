@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, Alert } from "react-native";
 import { Link } from "@react-navigation/native";
 
 import { colors } from "../theme";
@@ -9,6 +9,7 @@ import {
   validatePassword,
   hasErrors,
 } from "../utils/validation";
+import { getAuthErrorMessage } from "../utils/authErrors";
 
 import FormField from "../components/FormField";
 import AppButton from "../components/AppButton";
@@ -18,6 +19,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const passwordRef = useRef(null);
 
@@ -33,7 +35,7 @@ export default function LoginScreen() {
     setErrors((prev) => ({ ...prev, password: "" }));
   };
 
-  const loginHandler = () => {
+  const loginHandler = async () => {
     const newErrors = {
       email: validateEmail(email),
       password: validatePassword(password),
@@ -45,7 +47,14 @@ export default function LoginScreen() {
       return;
     }
 
-    login(email.trim());
+    setIsLoading(true);
+
+    try {
+      await login(email.trim(), password);
+    } catch (error) {
+      Alert.alert("Неуспешен вход", getAuthErrorMessage(error));
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -86,7 +95,12 @@ export default function LoginScreen() {
         onSubmitEditing={loginHandler}
       />
 
-      <AppButton title="Вход" onPress={loginHandler} style={styles.button} />
+      <AppButton
+        title={isLoading ? "Влизане..." : "Вход"}
+        onPress={loginHandler}
+        disabled={isLoading}
+        style={styles.button}
+      />
     </AuthLayout>
   );
 }
