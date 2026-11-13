@@ -1,11 +1,27 @@
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { colors } from "../theme";
 import { documentTypeLabels, formatDate } from "../utils/formatUtils";
 
-export default function DocumentItem({ title, type, imageUri, createdAt }) {
+export default function DocumentItem({
+  id,
+  title,
+  type,
+  imageUri,
+  createdAt,
+}) {
+  const navigation = useNavigation();
+
+  const pressHandler = () => {
+    navigation.navigate("DocumentDetails", { documentId: id, title });
+  };
+
   return (
-    <View style={styles.card}>
+    <Pressable
+      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+      onPress={pressHandler}
+    >
       <Image source={{ uri: imageUri }} style={styles.thumbnail} />
 
       <View style={styles.info}>
@@ -16,7 +32,7 @@ export default function DocumentItem({ title, type, imageUri, createdAt }) {
           {documentTypeLabels[type]} · {formatDate(createdAt.slice(0, 10))}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -28,6 +44,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 12,
     gap: 14,
+  },
+  cardPressed: {
+    opacity: 0.6,
   },
   thumbnail: {
     width: 56,

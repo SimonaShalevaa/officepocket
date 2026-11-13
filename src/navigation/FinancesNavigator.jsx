@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Header, getHeaderTitle } from "@react-navigation/elements";
 import { Link } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -9,6 +8,7 @@ import { colors } from "../theme";
 
 import FinancesScreen from "../screens/FinancesScreen";
 import TransactionDetailsScreen from "../screens/TransactionDetailsScreen";
+import AppHeader from "./AppHeader";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,13 +17,7 @@ export default function FinancesNavigator() {
     <Stack.Navigator
       initialRouteName="FinancesList"
       screenOptions={{
-        header: ({ options, route, back }) => (
-          <Header
-            {...options}
-            title={getHeaderTitle(options, route.name)}
-            back={back}
-          />
-        ),
+        header: (props) => <AppHeader {...props} />,
         headerStyle: { backgroundColor: colors.background },
         headerTintColor: colors.text,
         headerTitleStyle: { fontWeight: "bold" },
