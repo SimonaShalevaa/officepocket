@@ -4,6 +4,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { StatusBar } from "expo-status-bar";
 
 import AuthProvider from "./contexts/auth/AuthProvider";
+import DocumentsProvider from "./contexts/documents/DocumentsProvider";
 import RootNavigator from "./navigation/RootNavigator";
 
 export default function App() {
@@ -11,11 +12,13 @@ export default function App() {
     <SafeAreaProvider>
       <KeyboardProvider>
         <AuthProvider>
-          <StatusBar style="dark" />
+          <DocumentsProvider>
+            <StatusBar style="dark" />
 
-          <NavigationContainer>
-            <RootNavigator />
-          </NavigationContainer>
+            <NavigationContainer>
+              <RootNavigator />
+            </NavigationContainer>
+          </DocumentsProvider>
         </AuthProvider>
       </KeyboardProvider>
     </SafeAreaProvider>

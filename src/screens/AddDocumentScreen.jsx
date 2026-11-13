@@ -6,6 +6,7 @@ import * as ImagePicker from "expo-image-picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { colors } from "../theme";
+import { useDocumentsContext } from "../contexts/documents/DocumentsContext";
 import { documentTypeLabels } from "../utils/formatUtils";
 import {
   validateTitle,
@@ -24,6 +25,7 @@ export default function AddDocumentScreen({ navigation }) {
   const [errors, setErrors] = useState({});
 
   const { bottom } = useSafeAreaInsets();
+  const { addDocument } = useDocumentsContext();
 
   const setImageFromResult = (result) => {
     if (result.canceled) {
@@ -79,9 +81,8 @@ export default function AddDocumentScreen({ navigation }) {
       return;
     }
 
-    Alert.alert("Нов документ", `${documentTypeLabels[type]}\n${title}`, [
-      { text: "OK", onPress: () => navigation.goBack() },
-    ]);
+    addDocument({ type, title: title.trim(), imageUri });
+    navigation.goBack();
   };
 
   useLayoutEffect(() => {
