@@ -16,6 +16,39 @@ export async function getById(transactionId) {
   return result[0];
 }
 
+export async function create(transactionData) {
+  const response = await api.post(
+    "/transactions",
+    transformForDatabase(transactionData),
+    { headers: { Prefer: "return=representation" } },
+  );
+
+  return transformTransaction(response.data[0]);
+}
+
+export async function update(transactionId, transactionData) {
+  const response = await api.patch(
+    `/transactions?id=eq.${transactionId}`,
+    transformForDatabase(transactionData),
+    { headers: { Prefer: "return=representation" } },
+  );
+
+  return transformTransaction(response.data[0]);
+}
+
+export async function remove(transactionId) {
+  await api.delete(`/transactions?id=eq.${transactionId}`);
+}
+
+function transformForDatabase(transactionData) {
+  return {
+    title: transactionData.title,
+    type: transactionData.type,
+    amount: transactionData.amount,
+    is_paid: transactionData.isPaid,
+  };
+}
+
 function transformTransaction(item) {
   return {
     id: String(item.id),

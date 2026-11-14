@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
-import { StyleSheet, View, Text, ScrollView } from "react-native";
+import { useState, useCallback } from "react";
+import { StyleSheet, View, Text, ScrollView, Alert } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
 import { transactionApi } from "../api";
 import { typeLabels, formatAmount, formatDate } from "../utils/formatUtils";
 
 import DetailsRow from "../components/DetailsRow";
+import AppButton from "../components/AppButton";
 import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
-export default function TransactionDetailsScreen({ route }) {
+export default function TransactionDetailsScreen({ route, navigation }) {
   const { transactionId } = route.params;
 
   const [transaction, setTransaction] = useState(null);
@@ -17,12 +19,14 @@ export default function TransactionDetailsScreen({ route }) {
   const [error, setError] = useState("");
 
   const loadTransaction = async () => {
-    setIsLoading(true);
-
     try {
       const data = await transactionApi.getById(transactionId);
       setTransaction(data);
       setError("");
+
+      if (data) {
+        navigation.setOptions({ title: data.title });
+      }
     } catch (err) {
       setError("Неуспешно зареждане на записа. Проверете интернета.");
     } finally {
@@ -30,16 +34,47 @@ export default function TransactionDetailsScreen({ route }) {
     }
   };
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
+      loadTransaction();
+    }, [transactionId]),
+  );
+
+  const retryHandler = () => {
+    setIsLoading(true);
     loadTransaction();
-  }, [transactionId]);
+  };
+
+  const editHandler = () => {
+    navigation.navigate("AddTransaction", { transactionId });
+  };
+
+  const deleteHandler = () => {
+    Alert.alert(
+      "Изтриване на запис",
+      `Сигурни ли сте, че искате да изтриете „${transaction.title}“? Това не може да бъде отменено.`,
+      [
+        { text: "Отказ", style: "cancel" },
+        { text: "Изтрий", style: "destructive", onPress: confirmDeleteHandler },
+      ],
+    );
+  };
+
+  const confirmDeleteHandler = async () => {
+    try {
+      await transactionApi.remove(transactionId);
+      navigation.goBack();
+    } catch (err) {
+      Alert.alert("Грешка", "Записът не беше изтрит. Опитайте отново.");
+    }
+  };
 
   if (isLoading) {
     return <LoadingView />;
   }
 
   if (error) {
-    return <ErrorView message={error} onRetry={loadTransaction} />;
+    return <ErrorView message={error} onRetry={retryHandler} />;
   }
 
   if (!transaction) {
@@ -76,6 +111,21 @@ export default function TransactionDetailsScreen({ route }) {
         <DetailsRow label="Тип" value={typeLabels[transaction.type]} />
         <DetailsRow label="Категория" value={transaction.category || "—"} />
         <DetailsRow label="Дата" value={formatDate(transaction.date)} isLast />
+      </View>
+
+      <View style={styles.actions}>
+        <AppButton
+          title="Редактирай"
+          variant="outline"
+          onPress={editHandler}
+          style={styles.actionButton}
+        />
+        <AppButton
+          title="Изтрий"
+          variant="danger"
+          onPress={deleteHandler}
+          style={styles.actionButton}
+        />
       </View>
     </ScrollView>
   );
@@ -138,5 +188,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: 16,
     paddingHorizontal: 16,
+  },
+  actions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  actionButton: {
+    flex: 1,
   },
 });

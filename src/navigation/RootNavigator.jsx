@@ -44,7 +44,9 @@ export default function RootNavigator() {
           <Stack.Screen
             name="AddTransaction"
             component={AddTransactionScreen}
-            options={{ title: "Нов запис" }}
+            options={({ route }) => ({
+              title: route.params?.transactionId ? "Редакция" : "Нов запис",
+            })}
           />
           <Stack.Screen
             name="AddDocument"

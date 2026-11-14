@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { StyleSheet, FlatList, View, Text, RefreshControl } from "react-native";
+
+import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
 import { transactionApi } from "../api";
@@ -24,9 +26,11 @@ export default function FinancesScreen() {
     }
   };
 
-  useEffect(() => {
-    loadTransactions().finally(() => setIsLoading(false));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadTransactions().finally(() => setIsLoading(false));
+    }, []),
+  );
 
   const refreshHandler = async () => {
     setIsRefreshing(true);

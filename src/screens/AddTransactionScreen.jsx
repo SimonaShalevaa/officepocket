@@ -1,28 +1,54 @@
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { StyleSheet, View, Text, Pressable, Alert, Switch } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors } from "../theme";
+import { transactionApi } from "../api";
 
 import FormField from "../components/FormField";
 import TypeSelector from "../components/TypeSelector";
-import { typeLabels } from "../utils/formatUtils";
+import LoadingView from "../components/LoadingView";
 import {
   validateTitle,
   validateAmount,
   hasErrors,
 } from "../utils/validation";
 
-export default function AddTransactionScreen({ navigation }) {
+export default function AddTransactionScreen({ navigation, route }) {
+  const transactionId = route.params?.transactionId;
+  const isEditMode = !!transactionId;
+
   const [type, setType] = useState("expense");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [isPaid, setIsPaid] = useState(true);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(isEditMode);
+  const [isSaving, setIsSaving] = useState(false);
 
   const amountRef = useRef(null);
   const { bottom } = useSafeAreaInsets();
+
+  useEffect(() => {
+    if (!isEditMode) {
+      return;
+    }
+
+    transactionApi
+      .getById(transactionId)
+      .then((transaction) => {
+        setType(transaction.type);
+        setTitle(transaction.title);
+        setAmount(String(transaction.amount).replace(".", ","));
+        setIsPaid(transaction.isPaid);
+      })
+      .catch(() => {
+        Alert.alert("Грешка", "Записът не може да бъде зареден.");
+        navigation.goBack();
+      })
+      .finally(() => setIsLoading(false));
+  }, [transactionId]);
 
   const titleChangeHandler = (text) => {
     setTitle(text);
@@ -34,7 +60,11 @@ export default function AddTransactionScreen({ navigation }) {
     setErrors((prev) => ({ ...prev, amount: "" }));
   };
 
-  const saveHandler = () => {
+  const saveHandler = async () => {
+    if (isSaving) {
+      return;
+    }
+
     const newErrors = {
       title: validateTitle(title),
       amount: validateAmount(amount),
@@ -46,11 +76,27 @@ export default function AddTransactionScreen({ navigation }) {
       return;
     }
 
-    Alert.alert(
-      "Нов запис",
-      `${typeLabels[type]}\n${title}\n${amount} €\n${isPaid ? "Платено" : "Чакащо"}`,
-      [{ text: "OK", onPress: () => navigation.goBack() }],
-    );
+    const transactionData = {
+      type,
+      title: title.trim(),
+      amount: Number(amount.trim().replace(",", ".")),
+      isPaid,
+    };
+
+    setIsSaving(true);
+
+    try {
+      if (isEditMode) {
+        await transactionApi.update(transactionId, transactionData);
+      } else {
+        await transactionApi.create(transactionData);
+      }
+
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert("Грешка", "Записът не беше запазен. Опитайте отново.");
+      setIsSaving(false);
+    }
   };
 
   useLayoutEffect(() => {
@@ -64,11 +110,17 @@ export default function AddTransactionScreen({ navigation }) {
           onPress={saveHandler}
           hitSlop={10}
         >
-          <Text style={styles.saveText}>Запази</Text>
+          <Text style={styles.saveText}>
+            {isSaving ? "Запазване..." : "Запази"}
+          </Text>
         </Pressable>
       ),
     });
-  }, [navigation, type, title, amount, isPaid]);
+  }, [navigation, type, title, amount, isPaid, isSaving]);
+
+  if (isLoading) {
+    return <LoadingView />;
+  }
 
   return (
     <KeyboardAwareScrollView
