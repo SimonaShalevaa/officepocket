@@ -27,7 +27,8 @@
           "cameraPermission": "OfficePocket използва камерата, за да снимате фактури, бележки и договори.",
           "photosPermission": "OfficePocket използва галерията, за да прикачите снимка на документ."
         }
-      ]
+      ],
+      "expo-secure-store"
     ]
   }
 }

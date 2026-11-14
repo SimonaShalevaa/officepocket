@@ -19,9 +19,18 @@ export async function login(email, password) {
   return transformSession(response.data);
 }
 
+export async function refreshSession(refreshToken) {
+  const response = await authClient.post("/token?grant_type=refresh_token", {
+    refresh_token: refreshToken,
+  });
+
+  return transformSession(response.data);
+}
+
 function transformSession(data) {
   return {
     accessToken: data.access_token,
+    refreshToken: data.refresh_token,
     user: {
       id: data.user.id,
       email: data.user.email,
