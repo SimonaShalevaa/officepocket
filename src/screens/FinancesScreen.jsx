@@ -1,19 +1,71 @@
-import { StyleSheet, FlatList, View, Text } from "react-native";
+import { useState, useEffect } from "react";
+import { StyleSheet, FlatList, View, Text, RefreshControl } from "react-native";
 
 import { colors } from "../theme";
-import { transactions } from "../data";
+import { transactionApi } from "../api";
 
 import TransactionItem from "../components/TransactionItem";
+import LoadingView from "../components/LoadingView";
+import ErrorView from "../components/ErrorView";
 
 export default function FinancesScreen() {
+  const [transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [error, setError] = useState("");
+
+  const loadTransactions = async () => {
+    try {
+      const data = await transactionApi.getAll();
+      setTransactions(data);
+      setError("");
+    } catch (err) {
+      setError("Неуспешно зареждане на записите. Проверете интернета.");
+    }
+  };
+
+  useEffect(() => {
+    loadTransactions().finally(() => setIsLoading(false));
+  }, []);
+
+  const refreshHandler = async () => {
+    setIsRefreshing(true);
+    await loadTransactions();
+    setIsRefreshing(false);
+  };
+
+  const retryHandler = async () => {
+    setIsLoading(true);
+    await loadTransactions();
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
+  if (error && transactions.length === 0) {
+    return <ErrorView message={error} onRetry={retryHandler} />;
+  }
+
   return (
     <FlatList
       data={transactions}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => <TransactionItem {...item} />}
       contentContainerStyle={styles.content}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={refreshHandler}
+          colors={[colors.primary]}
+          tintColor={colors.primary}
+        />
+      }
       ListHeaderComponent={
-        <Text style={styles.subtitle}>{transactions.length} записа</Text>
+        transactions.length > 0 ? (
+          <Text style={styles.subtitle}>{transactions.length} записа</Text>
+        ) : null
       }
       ListEmptyComponent={
         <View style={styles.empty}>

@@ -28,7 +28,9 @@ export default function TransactionItem({
       <View style={styles.info}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.meta}>
-          {typeLabels[type]} · {category} · {formatDate(date)}
+          {[typeLabels[type], category, formatDate(date)]
+            .filter(Boolean)
+            .join(" · ")}
         </Text>
       </View>
 

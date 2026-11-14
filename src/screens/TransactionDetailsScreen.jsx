@@ -1,14 +1,46 @@
+import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 
 import { colors } from "../theme";
-import { transactions } from "../data";
+import { transactionApi } from "../api";
 import { typeLabels, formatAmount, formatDate } from "../utils/formatUtils";
 
 import DetailsRow from "../components/DetailsRow";
+import LoadingView from "../components/LoadingView";
+import ErrorView from "../components/ErrorView";
 
 export default function TransactionDetailsScreen({ route }) {
   const { transactionId } = route.params;
-  const transaction = transactions.find((item) => item.id === transactionId);
+
+  const [transaction, setTransaction] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadTransaction = async () => {
+    setIsLoading(true);
+
+    try {
+      const data = await transactionApi.getById(transactionId);
+      setTransaction(data);
+      setError("");
+    } catch (err) {
+      setError("Неуспешно зареждане на записа. Проверете интернета.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTransaction();
+  }, [transactionId]);
+
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
+  if (error) {
+    return <ErrorView message={error} onRetry={loadTransaction} />;
+  }
 
   if (!transaction) {
     return (
@@ -42,7 +74,7 @@ export default function TransactionDetailsScreen({ route }) {
 
       <View style={styles.infoBox}>
         <DetailsRow label="Тип" value={typeLabels[transaction.type]} />
-        <DetailsRow label="Категория" value={transaction.category} />
+        <DetailsRow label="Категория" value={transaction.category || "—"} />
         <DetailsRow label="Дата" value={formatDate(transaction.date)} isLast />
       </View>
     </ScrollView>
