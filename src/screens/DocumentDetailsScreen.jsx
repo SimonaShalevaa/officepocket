@@ -1,16 +1,77 @@
-import { StyleSheet, View, Text, Image, ScrollView } from "react-native";
+import { useState, useCallback } from "react";
+import { StyleSheet, View, Text, Image, ScrollView, Alert } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
-import { useDocumentsContext } from "../contexts/documents/DocumentsContext";
+import { documentApi } from "../api";
 import { documentTypeLabels, formatDate } from "../utils/formatUtils";
 
 import DetailsRow from "../components/DetailsRow";
+import AppButton from "../components/AppButton";
+import LoadingView from "../components/LoadingView";
+import ErrorView from "../components/ErrorView";
 
-export default function DocumentDetailsScreen({ route }) {
+export default function DocumentDetailsScreen({ route, navigation }) {
   const { documentId } = route.params;
-  const { documents } = useDocumentsContext();
 
-  const document = documents.find((item) => item.id === documentId);
+  const [document, setDocument] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadDocument = async () => {
+    try {
+      const data = await documentApi.getById(documentId);
+      setDocument(data);
+      setError("");
+
+      if (data) {
+        navigation.setOptions({ title: data.title });
+      }
+    } catch (err) {
+      setError("Неуспешно зареждане на документа. Проверете интернета.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadDocument();
+    }, [documentId]),
+  );
+
+  const retryHandler = () => {
+    setIsLoading(true);
+    loadDocument();
+  };
+
+  const deleteHandler = () => {
+    Alert.alert(
+      "Изтриване на документ",
+      `Сигурни ли сте, че искате да изтриете „${document.title}“? Това не може да бъде отменено.`,
+      [
+        { text: "Отказ", style: "cancel" },
+        { text: "Изтрий", style: "destructive", onPress: confirmDeleteHandler },
+      ],
+    );
+  };
+
+  const confirmDeleteHandler = async () => {
+    try {
+      await documentApi.remove(document);
+      navigation.goBack();
+    } catch (err) {
+      Alert.alert("Грешка", "Документът не беше изтрит. Опитайте отново.");
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
+  if (error) {
+    return <ErrorView message={error} onRetry={retryHandler} />;
+  }
 
   if (!document) {
     return (
@@ -23,7 +84,10 @@ export default function DocumentDetailsScreen({ route }) {
   return (
     <ScrollView contentContainerStyle={styles.content}>
       <View style={styles.imageBox}>
-        <Image source={{ uri: document.imageUri }} style={styles.image} />
+        <Image
+          source={documentApi.getImageSource(document.imagePath)}
+          style={styles.image}
+        />
       </View>
 
       <View style={styles.infoBox}>
@@ -35,6 +99,8 @@ export default function DocumentDetailsScreen({ route }) {
           isLast
         />
       </View>
+
+      <AppButton title="Изтрий" variant="danger" onPress={deleteHandler} />
     </ScrollView>
   );
 }

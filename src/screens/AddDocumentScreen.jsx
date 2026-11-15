@@ -6,7 +6,8 @@ import * as ImagePicker from "expo-image-picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { colors } from "../theme";
-import { useDocumentsContext } from "../contexts/documents/DocumentsContext";
+import { useAuthContext } from "../contexts/auth/AuthContext";
+import { documentApi } from "../api";
 import { documentTypeLabels } from "../utils/formatUtils";
 import {
   validateTitle,
@@ -23,9 +24,10 @@ export default function AddDocumentScreen({ navigation }) {
   const [type, setType] = useState("invoice");
   const [title, setTitle] = useState("");
   const [errors, setErrors] = useState({});
+  const [isSaving, setIsSaving] = useState(false);
 
   const { bottom } = useSafeAreaInsets();
-  const { addDocument } = useDocumentsContext();
+  const { user } = useAuthContext();
 
   const setImageFromResult = (result) => {
     if (result.canceled) {
@@ -69,7 +71,11 @@ export default function AddDocumentScreen({ navigation }) {
     setErrors((prev) => ({ ...prev, title: "" }));
   };
 
-  const saveHandler = () => {
+  const saveHandler = async () => {
+    if (isSaving) {
+      return;
+    }
+
     const newErrors = {
       image: validateImage(imageUri),
       title: validateTitle(title),
@@ -81,8 +87,20 @@ export default function AddDocumentScreen({ navigation }) {
       return;
     }
 
-    addDocument({ type, title: title.trim(), imageUri });
-    navigation.goBack();
+    setIsSaving(true);
+
+    try {
+      await documentApi.create({
+        title: title.trim(),
+        type,
+        imageUri,
+        userId: user.id,
+      });
+      navigation.goBack();
+    } catch (err) {
+      Alert.alert("Грешка", "Документът не беше запазен. Опитайте отново.");
+      setIsSaving(false);
+    }
   };
 
   useLayoutEffect(() => {
@@ -96,11 +114,13 @@ export default function AddDocumentScreen({ navigation }) {
           onPress={saveHandler}
           hitSlop={10}
         >
-          <Text style={styles.saveText}>Запази</Text>
+          <Text style={styles.saveText}>
+            {isSaving ? "Запазване..." : "Запази"}
+          </Text>
         </Pressable>
       ),
     });
-  }, [navigation, imageUri, type, title]);
+  }, [navigation, imageUri, type, title, isSaving]);
 
   return (
     <KeyboardAwareScrollView

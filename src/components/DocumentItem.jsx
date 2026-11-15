@@ -2,13 +2,14 @@ import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { documentApi } from "../api";
 import { documentTypeLabels, formatDate } from "../utils/formatUtils";
 
 export default function DocumentItem({
   id,
   title,
   type,
-  imageUri,
+  imagePath,
   createdAt,
 }) {
   const navigation = useNavigation();
@@ -22,7 +23,10 @@ export default function DocumentItem({
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       onPress={pressHandler}
     >
-      <Image source={{ uri: imageUri }} style={styles.thumbnail} />
+      <Image
+        source={documentApi.getImageSource(imagePath)}
+        style={styles.thumbnail}
+      />
 
       <View style={styles.info}>
         <Text style={styles.title} numberOfLines={1}>
