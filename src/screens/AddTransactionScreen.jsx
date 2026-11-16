@@ -88,11 +88,16 @@ export default function AddTransactionScreen({ navigation, route }) {
     try {
       if (isEditMode) {
         await transactionApi.update(transactionId, transactionData);
+
+        navigation.popTo("MainTabs", {
+          screen: "Finances",
+          params: { screen: "FinancesList", pop: true },
+        });
       } else {
         await transactionApi.create(transactionData);
-      }
 
-      navigation.goBack();
+        navigation.goBack();
+      }
     } catch (error) {
       Alert.alert("Грешка", "Записът не беше запазен. Опитайте отново.");
       setIsSaving(false);
