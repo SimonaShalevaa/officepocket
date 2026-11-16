@@ -25,7 +25,6 @@ export default function DocumentItem({
       <Image
         source={{ uri: imageUrl }}
         style={styles.thumbnail}
-        fadeDuration={0}
       />
 
       <View style={styles.info}>
