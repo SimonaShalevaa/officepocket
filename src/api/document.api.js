@@ -59,21 +59,9 @@ async function uploadImage(imagePath, imageUri) {
     type: "image/jpeg",
   });
 
-  const response = await fetch(
-    `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${imagePath}`,
-    {
-      method: "POST",
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${getAccessToken()}`,
-      },
-      body: formData,
-    },
-  );
-
-  if (!response.ok) {
-    throw new Error("Upload failed");
-  }
+  await storageClient.post(`/object/${BUCKET}/${imagePath}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 }
 
 function transformDocument(item) {
