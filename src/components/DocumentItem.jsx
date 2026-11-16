@@ -2,14 +2,13 @@ import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { colors } from "../theme";
-import { documentApi } from "../api";
 import { documentTypeLabels, formatDate } from "../utils/formatUtils";
 
 export default function DocumentItem({
   id,
   title,
   type,
-  imagePath,
+  imageUrl,
   createdAt,
 }) {
   const navigation = useNavigation();
@@ -24,7 +23,7 @@ export default function DocumentItem({
       onPress={pressHandler}
     >
       <Image
-        source={documentApi.getImageSource(imagePath)}
+        source={{ uri: imageUrl }}
         style={styles.thumbnail}
       />
 

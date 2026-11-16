@@ -98,7 +98,6 @@ export default function AddDocumentScreen({ navigation }) {
       });
       navigation.goBack();
     } catch (err) {
-      console.log("SAVE DOCUMENT ERROR", err.message, err.response?.data);
       Alert.alert("Грешка", "Документът не беше запазен. Опитайте отново.");
       setIsSaving(false);
     }

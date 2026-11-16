@@ -85,7 +85,7 @@ export default function DocumentDetailsScreen({ route, navigation }) {
     <ScrollView contentContainerStyle={styles.content}>
       <View style={styles.imageBox}>
         <Image
-          source={documentApi.getImageSource(document.imagePath)}
+          source={{ uri: document.imageUrl }}
           style={styles.image}
         />
       </View>

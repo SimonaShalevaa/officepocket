@@ -1,9 +1,7 @@
 import axios from "axios";
 
 export const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
-export const SUPABASE_KEY = process.env.EXPO_PUBLIC_SUPABASE_KEY;
-
-let accessToken = null;
+const SUPABASE_KEY = process.env.EXPO_PUBLIC_SUPABASE_KEY;
 
 const headers = {
   apikey: SUPABASE_KEY,
@@ -26,8 +24,6 @@ const api = axios.create({
 });
 
 export function setAccessToken(token) {
-  accessToken = token;
-
   if (token) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
     storageClient.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -35,10 +31,6 @@ export function setAccessToken(token) {
     delete api.defaults.headers.common.Authorization;
     delete storageClient.defaults.headers.common.Authorization;
   }
-}
-
-export function getAccessToken() {
-  return accessToken;
 }
 
 export default api;

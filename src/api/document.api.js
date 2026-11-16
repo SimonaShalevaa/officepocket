@@ -1,24 +1,46 @@
-import api, {
-  storageClient,
-  getAccessToken,
-  SUPABASE_URL,
-  SUPABASE_KEY,
-} from "./api";
+import api, { storageClient, SUPABASE_URL } from "./api";
 
 const BUCKET = "documents";
 
 export async function getAll() {
   const response = await api.get("/documents?select=*&order=created_at.desc");
 
-  return response.data.map(transformDocument);
+  const documents = response.data.map(transformDocument);
+
+  if (documents.length === 0) {
+    return documents;
+  }
+
+  const signResponse = await storageClient.post(`/object/sign/${BUCKET}`, {
+    expiresIn: 3600,
+    paths: documents.map((document) => document.imagePath),
+  });
+
+  return documents.map((document, index) => ({
+    ...document,
+    imageUrl: `${SUPABASE_URL}/storage/v1${signResponse.data[index].signedURL}`,
+  }));
 }
 
 export async function getById(documentId) {
   const response = await api.get(`/documents?id=eq.${documentId}`);
 
   const result = response.data.map(transformDocument);
+  const document = result[0];
 
-  return result[0];
+  if (!document) {
+    return document;
+  }
+
+  const signResponse = await storageClient.post(
+    `/object/sign/${BUCKET}/${document.imagePath}`,
+    { expiresIn: 3600 },
+  );
+
+  return {
+    ...document,
+    imageUrl: `${SUPABASE_URL}/storage/v1${signResponse.data.signedURL}`,
+  };
 }
 
 export async function create({ title, type, imageUri, userId }) {
@@ -38,16 +60,6 @@ export async function create({ title, type, imageUri, userId }) {
 export async function remove(document) {
   await api.delete(`/documents?id=eq.${document.id}`);
   await storageClient.delete(`/object/${BUCKET}/${document.imagePath}`);
-}
-
-export function getImageSource(imagePath) {
-  return {
-    uri: `${SUPABASE_URL}/storage/v1/object/authenticated/${BUCKET}/${imagePath}`,
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
-  };
 }
 
 async function uploadImage(imagePath, imageUri) {
