@@ -22,3 +22,6 @@ export function formatAmount(amount, type) {
 export function formatDate(date) {
   return date.split("-").reverse().join(".");
 }
+export function formatMoney(amount) {
+  return `${amount.toFixed(2).replace(".", ",")} €`;
+}
