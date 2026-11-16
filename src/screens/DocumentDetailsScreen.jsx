@@ -87,6 +87,7 @@ export default function DocumentDetailsScreen({ route, navigation }) {
         <Image
           source={{ uri: document.imageUrl }}
           style={styles.image}
+          fadeDuration={0}
         />
       </View>
 
