@@ -1,9 +1,10 @@
-import { useState, useCallback } from "react";
+import { useReducer, useCallback } from "react";
 import { StyleSheet, FlatList, View, Text, RefreshControl } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { listReducer, initialListState } from "../reducers/listReducer";
 import { transactionApi } from "../api";
 
 import TransactionItem from "../components/TransactionItem";
@@ -11,37 +12,35 @@ import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
 export default function FinancesScreen() {
-  const [transactions, setTransactions] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(listReducer, initialListState);
+  const { items: transactions, isLoading, isRefreshing, error } = state;
 
   const loadTransactions = async () => {
     try {
       const data = await transactionApi.getAll();
-      setTransactions(data);
-      setError("");
+      dispatch({ type: "FETCH_SUCCESS", payload: data });
     } catch (err) {
-      setError("Неуспешно зареждане на записите. Проверете интернета.");
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: "Неуспешно зареждане на записите. Проверете интернета.",
+      });
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      loadTransactions().finally(() => setIsLoading(false));
+      loadTransactions();
     }, []),
   );
 
   const refreshHandler = async () => {
-    setIsRefreshing(true);
+    dispatch({ type: "REFRESH_START" });
     await loadTransactions();
-    setIsRefreshing(false);
   };
 
   const retryHandler = async () => {
-    setIsLoading(true);
+    dispatch({ type: "FETCH_START" });
     await loadTransactions();
-    setIsLoading(false);
   };
 
   if (isLoading) {

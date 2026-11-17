@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
+import { useReducer, useCallback } from "react";
 import { StyleSheet, FlatList, View, Text, RefreshControl } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { listReducer, initialListState } from "../reducers/listReducer";
 import { documentApi } from "../api";
 
 import DocumentItem from "../components/DocumentItem";
@@ -10,37 +11,35 @@ import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
 export default function DocumentsScreen() {
-  const [documents, setDocuments] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(listReducer, initialListState);
+  const { items: documents, isLoading, isRefreshing, error } = state;
 
   const loadDocuments = async () => {
     try {
       const data = await documentApi.getAll();
-      setDocuments(data);
-      setError("");
+      dispatch({ type: "FETCH_SUCCESS", payload: data });
     } catch (err) {
-      setError("Неуспешно зареждане на документите. Проверете интернета.");
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: "Неуспешно зареждане на документите. Проверете интернета.",
+      });
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      loadDocuments().finally(() => setIsLoading(false));
+      loadDocuments();
     }, []),
   );
 
   const refreshHandler = async () => {
-    setIsRefreshing(true);
+    dispatch({ type: "REFRESH_START" });
     await loadDocuments();
-    setIsRefreshing(false);
   };
 
   const retryHandler = async () => {
-    setIsLoading(true);
+    dispatch({ type: "FETCH_START" });
     await loadDocuments();
-    setIsLoading(false);
   };
 
   if (isLoading) {

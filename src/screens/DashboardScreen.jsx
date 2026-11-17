@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useReducer, useCallback } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -12,6 +12,7 @@ import { Button } from "@react-navigation/elements";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { colors } from "../theme";
+import { listReducer, initialListState } from "../reducers/listReducer";
 import { transactionApi } from "../api";
 import { formatMoney } from "../utils/formatUtils";
 import {
@@ -27,39 +28,37 @@ import ErrorView from "../components/ErrorView";
 export default function DashboardScreen() {
   const today = new Date();
 
-  const [transactions, setTransactions] = useState([]);
+  const [state, dispatch] = useReducer(listReducer, initialListState);
+  const { items: transactions, isLoading, isRefreshing, error } = state;
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState("");
 
   const loadTransactions = async () => {
     try {
       const data = await transactionApi.getAll();
-      setTransactions(data);
-      setError("");
+      dispatch({ type: "FETCH_SUCCESS", payload: data });
     } catch (err) {
-      setError("Неуспешно зареждане на данните. Проверете интернета.");
+      dispatch({
+        type: "FETCH_ERROR",
+        payload: "Неуспешно зареждане на данните. Проверете интернета.",
+      });
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      loadTransactions().finally(() => setIsLoading(false));
+      loadTransactions();
     }, []),
   );
 
   const refreshHandler = async () => {
-    setIsRefreshing(true);
+    dispatch({ type: "REFRESH_START" });
     await loadTransactions();
-    setIsRefreshing(false);
   };
 
   const retryHandler = async () => {
-    setIsLoading(true);
+    dispatch({ type: "FETCH_START" });
     await loadTransactions();
-    setIsLoading(false);
   };
 
   const isCurrentMonth =
