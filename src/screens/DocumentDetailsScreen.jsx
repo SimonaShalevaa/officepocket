@@ -1,5 +1,13 @@
 import { useState, useCallback } from "react";
-import { StyleSheet, View, Text, Image, ScrollView, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  Alert,
+  RefreshControl,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
@@ -17,6 +25,7 @@ export default function DocumentDetailsScreen({ route, navigation }) {
   const [document, setDocument] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const loadDocument = async () => {
     try {
@@ -39,6 +48,12 @@ export default function DocumentDetailsScreen({ route, navigation }) {
       loadDocument();
     }, [documentId]),
   );
+
+  const refreshHandler = async () => {
+    setIsRefreshing(true);
+    await loadDocument();
+    setIsRefreshing(false);
+  };
 
   const retryHandler = () => {
     setIsLoading(true);
@@ -82,7 +97,17 @@ export default function DocumentDetailsScreen({ route, navigation }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView
+      contentContainerStyle={styles.content}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={refreshHandler}
+          colors={[colors.primary]}
+          tintColor={colors.primary}
+        />
+      }
+    >
       <View style={styles.imageBox}>
         <Image
           source={{ uri: document.imageUrl }}

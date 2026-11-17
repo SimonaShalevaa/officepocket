@@ -1,5 +1,12 @@
 import { useState, useCallback } from "react";
-import { StyleSheet, View, Text, ScrollView, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  Alert,
+  RefreshControl,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
@@ -17,6 +24,7 @@ export default function TransactionDetailsScreen({ route, navigation }) {
   const [transaction, setTransaction] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const loadTransaction = async () => {
     try {
@@ -39,6 +47,12 @@ export default function TransactionDetailsScreen({ route, navigation }) {
       loadTransaction();
     }, [transactionId]),
   );
+
+  const refreshHandler = async () => {
+    setIsRefreshing(true);
+    await loadTransaction();
+    setIsRefreshing(false);
+  };
 
   const retryHandler = () => {
     setIsLoading(true);
@@ -88,7 +102,17 @@ export default function TransactionDetailsScreen({ route, navigation }) {
   const isIncome = transaction.type === "income";
 
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView
+      contentContainerStyle={styles.content}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={refreshHandler}
+          colors={[colors.primary]}
+          tintColor={colors.primary}
+        />
+      }
+    >
       <View style={styles.summary}>
         <Text style={styles.summaryLabel}>Сума</Text>
         <Text style={[styles.amount, isIncome && styles.amountIncome]}>
