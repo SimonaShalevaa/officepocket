@@ -32,7 +32,8 @@
           "photosPermission": "OfficePocket използва галерията, за да прикачите снимка на документ."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-sharing"
     ],
     "extra": {
       "eas": {

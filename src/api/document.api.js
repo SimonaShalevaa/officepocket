@@ -1,3 +1,5 @@
+import { File, Paths } from "expo-file-system";
+
 import api, { storageClient, SUPABASE_URL } from "./api";
 
 const BUCKET = "documents";
@@ -60,6 +62,18 @@ export async function create({ title, type, imageUri, userId }) {
 export async function remove(document) {
   await api.delete(`/documents?id=eq.${document.id}`);
   await storageClient.delete(`/object/${BUCKET}/${document.imagePath}`);
+}
+
+export async function downloadImage(document) {
+  const fileName = document.imagePath.split("/")[1];
+
+  const file = await File.downloadFileAsync(
+    document.imageUrl,
+    new File(Paths.cache, fileName),
+    { idempotent: true },
+  );
+
+  return file.uri;
 }
 
 async function uploadImage(imagePath, imageUri) {

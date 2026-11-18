@@ -9,6 +9,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Sharing from "expo-sharing";
 
 import { colors } from "../theme";
 import { warningHaptic } from "../utils/haptics";
@@ -27,6 +28,7 @@ export default function DocumentDetailsScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   const loadDocument = async () => {
     try {
@@ -59,6 +61,30 @@ export default function DocumentDetailsScreen({ route, navigation }) {
   const retryHandler = () => {
     setIsLoading(true);
     loadDocument();
+  };
+
+  const shareHandler = async () => {
+    const isAvailable = await Sharing.isAvailableAsync();
+
+    if (!isAvailable) {
+      Alert.alert("Грешка", "Споделянето не е налично на това устройство.");
+      return;
+    }
+
+    setIsSharing(true);
+
+    try {
+      const fileUri = await documentApi.downloadImage(document);
+
+      await Sharing.shareAsync(fileUri, {
+        mimeType: "image/jpeg",
+        dialogTitle: document.title,
+      });
+    } catch (err) {
+      Alert.alert("Грешка", "Документът не беше споделен. Опитайте отново.");
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   const deleteHandler = () => {
@@ -127,7 +153,21 @@ export default function DocumentDetailsScreen({ route, navigation }) {
         />
       </View>
 
-      <AppButton title="Изтрий" variant="danger" onPress={deleteHandler} />
+      <View style={styles.actions}>
+        <AppButton
+          title={isSharing ? "Споделяне..." : "Сподели"}
+          variant="outline"
+          onPress={shareHandler}
+          disabled={isSharing}
+          style={styles.actionButton}
+        />
+        <AppButton
+          title="Изтрий"
+          variant="danger"
+          onPress={deleteHandler}
+          style={styles.actionButton}
+        />
+      </View>
     </ScrollView>
   );
 }
@@ -161,5 +201,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: 16,
     paddingHorizontal: 16,
+  },
+  actions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  actionButton: {
+    flex: 1,
   },
 });
