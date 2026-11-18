@@ -3,6 +3,7 @@ import { StyleSheet, Text, Alert } from "react-native";
 import { Link } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { errorHaptic } from "../utils/haptics";
 import { useAuthContext } from "../contexts/auth/AuthContext";
 import {
   validateEmail,
@@ -44,6 +45,7 @@ export default function LoginScreen() {
     setErrors(newErrors);
 
     if (hasErrors(newErrors)) {
+      errorHaptic();
       return;
     }
 

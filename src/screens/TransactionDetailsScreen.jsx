@@ -10,6 +10,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { warningHaptic } from "../utils/haptics";
 import { transactionApi } from "../api";
 import { typeLabels, formatAmount, formatDate } from "../utils/formatUtils";
 
@@ -77,6 +78,7 @@ export default function TransactionDetailsScreen({ route, navigation }) {
   const confirmDeleteHandler = async () => {
     try {
       await transactionApi.remove(transactionId);
+      warningHaptic();
       navigation.goBack();
     } catch (err) {
       Alert.alert("Грешка", "Записът не беше изтрит. Опитайте отново.");

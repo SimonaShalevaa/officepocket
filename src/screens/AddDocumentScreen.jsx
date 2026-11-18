@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { colors } from "../theme";
+import { errorHaptic, successHaptic } from "../utils/haptics";
 import { useAuthContext } from "../contexts/auth/AuthContext";
 import { documentApi } from "../api";
 import { documentTypeLabels } from "../utils/formatUtils";
@@ -96,6 +97,7 @@ export default function AddDocumentScreen({ navigation }) {
     setErrors(newErrors);
 
     if (hasErrors(newErrors)) {
+      errorHaptic();
       return;
     }
 
@@ -108,6 +110,7 @@ export default function AddDocumentScreen({ navigation }) {
         imageUri,
         userId: user.id,
       });
+      successHaptic();
       navigation.goBack();
     } catch (err) {
       Alert.alert("Грешка", "Документът не беше запазен. Опитайте отново.");

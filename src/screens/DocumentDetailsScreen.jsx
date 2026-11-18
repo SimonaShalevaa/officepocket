@@ -11,6 +11,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { warningHaptic } from "../utils/haptics";
 import { documentApi } from "../api";
 import { documentTypeLabels, formatDate } from "../utils/formatUtils";
 
@@ -74,6 +75,7 @@ export default function DocumentDetailsScreen({ route, navigation }) {
   const confirmDeleteHandler = async () => {
     try {
       await documentApi.remove(document);
+      warningHaptic();
       navigation.goBack();
     } catch (err) {
       Alert.alert("Грешка", "Документът не беше изтрит. Опитайте отново.");

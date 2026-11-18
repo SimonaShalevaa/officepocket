@@ -4,6 +4,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors } from "../theme";
+import { errorHaptic, successHaptic } from "../utils/haptics";
 import { transactionApi } from "../api";
 
 import FormField from "../components/FormField";
@@ -73,6 +74,7 @@ export default function AddTransactionScreen({ navigation, route }) {
     setErrors(newErrors);
 
     if (hasErrors(newErrors)) {
+      errorHaptic();
       return;
     }
 
@@ -88,6 +90,7 @@ export default function AddTransactionScreen({ navigation, route }) {
     try {
       if (isEditMode) {
         await transactionApi.update(transactionId, transactionData);
+        successHaptic();
 
         navigation.popTo("MainTabs", {
           screen: "Finances",
@@ -95,6 +98,7 @@ export default function AddTransactionScreen({ navigation, route }) {
         });
       } else {
         await transactionApi.create(transactionData);
+        successHaptic();
 
         navigation.goBack();
       }

@@ -3,6 +3,7 @@ import { StyleSheet, Text, Alert } from "react-native";
 import { Link, CommonActions } from "@react-navigation/native";
 
 import { colors } from "../theme";
+import { errorHaptic } from "../utils/haptics";
 import { useAuthContext } from "../contexts/auth/AuthContext";
 import {
   validateName,
@@ -47,6 +48,7 @@ export default function RegisterScreen() {
     setErrors(newErrors);
 
     if (hasErrors(newErrors)) {
+      errorHaptic();
       return;
     }
 

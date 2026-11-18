@@ -12,6 +12,7 @@ import { Button } from "@react-navigation/elements";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { colors } from "../theme";
+import { selectionHaptic } from "../utils/haptics";
 import { listReducer, initialListState } from "../reducers/listReducer";
 import { transactionApi } from "../api";
 import { formatMoney } from "../utils/formatUtils";
@@ -65,6 +66,8 @@ export default function DashboardScreen() {
     year === today.getFullYear() && month === today.getMonth();
 
   const previousMonthHandler = () => {
+    selectionHaptic();
+
     if (month === 0) {
       setMonth(11);
       setYear(year - 1);
@@ -77,6 +80,8 @@ export default function DashboardScreen() {
     if (isCurrentMonth) {
       return;
     }
+
+    selectionHaptic();
 
     if (month === 11) {
       setMonth(0);
