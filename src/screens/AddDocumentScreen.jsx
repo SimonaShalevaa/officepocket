@@ -1,5 +1,13 @@
 import { useState, useLayoutEffect } from "react";
-import { StyleSheet, View, Text, Image, Pressable, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Pressable,
+  Alert,
+  Linking,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
@@ -45,6 +53,10 @@ export default function AddDocumentScreen({ navigation }) {
       Alert.alert(
         "Няма достъп до камерата",
         "Разрешете достъп до камерата от настройките на телефона, за да снимате документи.",
+        [
+          { text: "Отказ", style: "cancel" },
+          { text: "Отвори настройки", onPress: () => Linking.openSettings() },
+        ],
       );
       return;
     }
