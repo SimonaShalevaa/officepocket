@@ -6,9 +6,16 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../theme";
 import { errorHaptic, successHaptic } from "../utils/haptics";
 import { transactionApi } from "../api";
+import {
+  categoryOptions,
+  toDateString,
+  parseDate,
+} from "../utils/formatUtils";
 
 import FormField from "../components/FormField";
 import TypeSelector from "../components/TypeSelector";
+import CategorySelector from "../components/CategorySelector";
+import DateField from "../components/DateField";
 import LoadingView from "../components/LoadingView";
 import {
   validateTitle,
@@ -23,6 +30,8 @@ export default function AddTransactionScreen({ navigation, route }) {
   const [type, setType] = useState("expense");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState(new Date());
   const [isPaid, setIsPaid] = useState(true);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(isEditMode);
@@ -42,6 +51,8 @@ export default function AddTransactionScreen({ navigation, route }) {
         setType(transaction.type);
         setTitle(transaction.title);
         setAmount(String(transaction.amount).replace(".", ","));
+        setCategory(transaction.category || "");
+        setDate(parseDate(transaction.date));
         setIsPaid(transaction.isPaid);
       })
       .catch(() => {
@@ -50,6 +61,14 @@ export default function AddTransactionScreen({ navigation, route }) {
       })
       .finally(() => setIsLoading(false));
   }, [transactionId]);
+
+  const typeChangeHandler = (newType) => {
+    setType(newType);
+
+    if (!categoryOptions[newType].includes(category)) {
+      setCategory("");
+    }
+  };
 
   const titleChangeHandler = (text) => {
     setTitle(text);
@@ -81,7 +100,9 @@ export default function AddTransactionScreen({ navigation, route }) {
     const transactionData = {
       type,
       title: title.trim(),
+      category,
       amount: Number(amount.trim().replace(",", ".")),
+      date: toDateString(date),
       isPaid,
     };
 
@@ -125,7 +146,16 @@ export default function AddTransactionScreen({ navigation, route }) {
         </Pressable>
       ),
     });
-  }, [navigation, type, title, amount, isPaid, isSaving]);
+  }, [
+    navigation,
+    type,
+    title,
+    category,
+    amount,
+    date,
+    isPaid,
+    isSaving,
+  ]);
 
   if (isLoading) {
     return <LoadingView />;
@@ -139,7 +169,7 @@ export default function AddTransactionScreen({ navigation, route }) {
     >
       <View style={styles.field}>
         <Text style={styles.label}>Тип</Text>
-        <TypeSelector value={type} onChange={setType} />
+        <TypeSelector value={type} onChange={typeChangeHandler} />
       </View>
 
       <FormField
@@ -162,6 +192,19 @@ export default function AddTransactionScreen({ navigation, route }) {
         placeholder="0,00"
         keyboardType="decimal-pad"
       />
+
+      {categoryOptions[type].length > 0 && (
+        <View style={styles.field}>
+          <Text style={styles.label}>Категория (по избор)</Text>
+          <CategorySelector
+            options={categoryOptions[type]}
+            value={category}
+            onChange={setCategory}
+          />
+        </View>
+      )}
+
+      <DateField label="Дата" value={date} onChange={setDate} />
 
       <View style={styles.switchRow}>
         <View style={styles.switchInfo}>

@@ -44,7 +44,9 @@ function transformForDatabase(transactionData) {
   return {
     title: transactionData.title,
     type: transactionData.type,
+    category: transactionData.category || null,
     amount: transactionData.amount,
+    date: transactionData.date,
     is_paid: transactionData.isPaid,
   };
 }
