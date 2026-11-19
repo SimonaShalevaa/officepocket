@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
+import { Alert } from "react-native";
 import * as SecureStore from "expo-secure-store";
 
 import { AuthContext } from "./AuthContext";
 import { authApi } from "../../api";
-import { setAccessToken } from "../../api/api";
-
-const REFRESH_TOKEN_KEY = "refreshToken";
+import {
+  setAccessToken,
+  setOnSessionExpired,
+  REFRESH_TOKEN_KEY,
+} from "../../api/api";
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -13,6 +16,11 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     restoreSession();
+
+    setOnSessionExpired(async () => {
+      await clearSession();
+      Alert.alert("Сесията изтече", "Моля, влезте отново в профила си.");
+    });
   }, []);
 
   const saveSession = async (session) => {
