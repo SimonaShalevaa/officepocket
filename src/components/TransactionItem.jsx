@@ -12,12 +12,17 @@ export default function TransactionItem({
   amount,
   date,
   isPaid,
+  fromPending = false,
 }) {
   const navigation = useNavigation();
   const isIncome = type === "income";
 
   const pressHandler = () => {
-    navigation.navigate("TransactionDetails", { transactionId: id, title });
+    navigation.navigate("TransactionDetails", {
+      transactionId: id,
+      title,
+      fromPending,
+    });
   };
 
   return (

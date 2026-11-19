@@ -61,7 +61,10 @@ export default function TransactionDetailsScreen({ route, navigation }) {
   };
 
   const editHandler = () => {
-    navigation.navigate("AddTransaction", { transactionId });
+    navigation.navigate("AddTransaction", {
+      transactionId,
+      fromPending: route.params.fromPending,
+    });
   };
 
   const deleteHandler = () => {

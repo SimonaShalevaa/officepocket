@@ -26,7 +26,7 @@ import DetailsRow from "../components/DetailsRow";
 import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
-export default function DashboardScreen() {
+export default function DashboardScreen({ navigation }) {
   const today = new Date();
 
   const [state, dispatch] = useReducer(listReducer, initialListState);
@@ -195,16 +195,23 @@ export default function DashboardScreen() {
       </View>
 
       {pending.count > 0 && (
-        <View style={styles.pendingCard}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.pendingCard,
+            pressed && styles.pendingCardPressed,
+          ]}
+          onPress={() => navigation.navigate("PendingPayments")}
+        >
           <Ionicons name="time-outline" size={24} color={colors.pending} />
-          <View>
+          <View style={styles.pendingInfo}>
             <Text style={styles.pendingTitle}>Чакащи плащания</Text>
             <Text style={styles.pendingText}>
               {pending.count} {pending.count === 1 ? "запис" : "записа"} ·{" "}
               {formatMoney(pending.amount)}
             </Text>
           </View>
-        </View>
+          <Ionicons name="chevron-forward" size={20} color={colors.pending} />
+        </Pressable>
       )}
 
       <Button screen="Finances" variant="filled" color={colors.primary}>
@@ -301,6 +308,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.pendingLight,
     borderRadius: 16,
     padding: 14,
+  },
+  pendingCardPressed: {
+    opacity: 0.7,
+  },
+  pendingInfo: {
+    flex: 1,
   },
   pendingTitle: {
     color: colors.pending,

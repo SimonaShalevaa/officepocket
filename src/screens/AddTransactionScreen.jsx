@@ -113,10 +113,14 @@ export default function AddTransactionScreen({ navigation, route }) {
         await transactionApi.update(transactionId, transactionData);
         successHaptic();
 
-        navigation.popTo("MainTabs", {
-          screen: "Finances",
-          params: { screen: "FinancesList", pop: true },
-        });
+        if (route.params?.fromPending) {
+          navigation.popTo("PendingPayments");
+        } else {
+          navigation.popTo("MainTabs", {
+            screen: "Finances",
+            params: { screen: "FinancesList", pop: true },
+          });
+        }
       } else {
         await transactionApi.create(transactionData);
         successHaptic();

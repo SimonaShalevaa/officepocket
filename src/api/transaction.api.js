@@ -8,6 +8,14 @@ export async function getAll() {
   return response.data.map(transformTransaction);
 }
 
+export async function getPending() {
+  const response = await api.get(
+    "/transactions?select=*&is_paid=eq.false&order=date.asc,created_at.asc",
+  );
+
+  return response.data.map(transformTransaction);
+}
+
 export async function getById(transactionId) {
   const response = await api.get(`/transactions?id=eq.${transactionId}`);
 
@@ -34,6 +42,10 @@ export async function update(transactionId, transactionData) {
   );
 
   return transformTransaction(response.data[0]);
+}
+
+export async function markAsPaid(transactionId) {
+  await api.patch(`/transactions?id=eq.${transactionId}`, { is_paid: true });
 }
 
 export async function remove(transactionId) {

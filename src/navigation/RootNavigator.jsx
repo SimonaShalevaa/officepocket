@@ -8,6 +8,8 @@ import TabsNavigator from "./TabsNavigator";
 import AuthNavigator from "./AuthNavigator";
 import AddTransactionScreen from "../screens/AddTransactionScreen";
 import AddDocumentScreen from "../screens/AddDocumentScreen";
+import PendingPaymentsScreen from "../screens/PendingPaymentsScreen";
+import TransactionDetailsScreen from "../screens/TransactionDetailsScreen";
 import AppHeader from "./AppHeader";
 
 const Stack = createNativeStackNavigator();
@@ -47,6 +49,16 @@ export default function RootNavigator() {
             options={({ route }) => ({
               title: route.params?.transactionId ? "Редакция" : "Нов запис",
             })}
+          />
+          <Stack.Screen
+            name="PendingPayments"
+            component={PendingPaymentsScreen}
+            options={{ title: "Чакащи плащания" }}
+          />
+          <Stack.Screen
+            name="TransactionDetails"
+            component={TransactionDetailsScreen}
+            options={({ route }) => ({ title: route.params.title })}
           />
           <Stack.Screen
             name="AddDocument"
