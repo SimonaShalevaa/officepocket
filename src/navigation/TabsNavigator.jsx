@@ -4,11 +4,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { colors } from "../theme";
 
 import DashboardScreen from "../screens/DashboardScreen";
-import VacationsScreen from "../screens/VacationsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
 import FinancesNavigator from "./FinancesNavigator";
 import DocumentsNavigator from "./DocumentsNavigator";
+import VacationsNavigator from "./VacationsNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -83,9 +83,11 @@ export default function TabsNavigator() {
       />
       <Tab.Screen
         name="Vacations"
-        component={VacationsScreen}
+        component={VacationsNavigator}
         options={{
           title: "Отпуски",
+          headerShown: false,
+          popToTopOnBlur: true,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? "calendar" : "calendar-outline"}
