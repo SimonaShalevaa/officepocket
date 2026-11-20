@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { StyleSheet, Text, Alert } from "react-native";
-import { Link } from "@react-navigation/native";
+import { Link, useFocusEffect } from "@react-navigation/native";
 
 import { colors } from "../theme";
 import { errorHaptic } from "../utils/haptics";
@@ -25,6 +25,16 @@ export default function LoginScreen() {
   const passwordRef = useRef(null);
 
   const { login } = useAuthContext();
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setEmail("");
+        setPassword("");
+        setErrors({});
+      };
+    }, []),
+  );
 
   const emailChangeHandler = (text) => {
     setEmail(text);
