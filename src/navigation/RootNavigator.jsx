@@ -8,6 +8,7 @@ import TabsNavigator from "./TabsNavigator";
 import AuthNavigator from "./AuthNavigator";
 import AddTransactionScreen from "../screens/AddTransactionScreen";
 import AddDocumentScreen from "../screens/AddDocumentScreen";
+import AddVacationScreen from "../screens/AddVacationScreen";
 import PendingPaymentsScreen from "../screens/PendingPaymentsScreen";
 import TransactionDetailsScreen from "../screens/TransactionDetailsScreen";
 import AppHeader from "./AppHeader";
@@ -48,6 +49,13 @@ export default function RootNavigator() {
             component={AddTransactionScreen}
             options={({ route }) => ({
               title: route.params?.transactionId ? "Редакция" : "Нов запис",
+            })}
+          />
+          <Stack.Screen
+            name="AddVacation"
+            component={AddVacationScreen}
+            options={({ route }) => ({
+              title: route.params?.vacationId ? "Редакция" : "Нов отпуск",
             })}
           />
           <Stack.Screen

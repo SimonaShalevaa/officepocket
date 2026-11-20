@@ -1,3 +1,5 @@
+import { countWorkingDays } from "./vacationUtils";
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const AMOUNT_PATTERN = /^\d+(\.\d{1,2})?$/;
 
@@ -91,6 +93,25 @@ export function hasErrors(errors) {
 export function validateImage(imageUri) {
   if (!imageUri) {
     return "Добавете снимка на документа";
+  }
+
+  return "";
+}
+
+export function validateVacationDates(startDate, endDate) {
+  if (endDate < startDate) {
+    return "Крайната дата не може да е преди началната";
+  }
+  if (countWorkingDays(startDate, endDate) === 0) {
+    return "Периодът трябва да съдържа поне един работен ден";
+  }
+
+  return "";
+}
+
+export function validateNote(note) {
+  if (note.trim().length > 200) {
+    return "Бележката може да е най-много 200 символа";
   }
 
   return "";
