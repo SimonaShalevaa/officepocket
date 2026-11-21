@@ -1,4 +1,5 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { colors } from "../theme";
 import { formatDate } from "../utils/formatUtils";
@@ -9,16 +10,23 @@ import {
   getVacationStatus,
 } from "../utils/vacationUtils";
 
-export default function VacationItem({ type, startDate, endDate }) {
+export default function VacationItem({ id, type, startDate, endDate }) {
+  const navigation = useNavigation();
   const status = getVacationStatus({ startDate, endDate });
   const days = countWorkingDays(startDate, endDate);
+  const period = `${formatDate(startDate)} – ${formatDate(endDate)}`;
+
+  const pressHandler = () => {
+    navigation.navigate("VacationDetails", { vacationId: id, title: period });
+  };
 
   return (
-    <View style={styles.card}>
+    <Pressable
+      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+      onPress={pressHandler}
+    >
       <View style={styles.info}>
-        <Text style={styles.title}>
-          {formatDate(startDate)} – {formatDate(endDate)}
-        </Text>
+        <Text style={styles.title}>{period}</Text>
         <Text style={styles.meta}>
           {vacationTypeLabels[type]} · {days}{" "}
           {days === 1 ? "работен ден" : "работни дни"}
@@ -37,7 +45,7 @@ export default function VacationItem({ type, startDate, endDate }) {
           {vacationStatusLabels[status]}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -50,6 +58,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 12,
+  },
+  cardPressed: {
+    opacity: 0.6,
   },
   info: {
     flex: 1,

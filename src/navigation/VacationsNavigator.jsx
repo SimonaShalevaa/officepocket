@@ -6,6 +6,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { colors } from "../theme";
 
 import VacationsScreen from "../screens/VacationsScreen";
+import VacationDetailsScreen from "../screens/VacationDetailsScreen";
 import AppHeader from "./AppHeader";
 
 const Stack = createNativeStackNavigator();
@@ -38,6 +39,11 @@ export default function VacationsNavigator() {
             </Link>
           ),
         }}
+      />
+      <Stack.Screen
+        name="VacationDetails"
+        component={VacationDetailsScreen}
+        options={({ route }) => ({ title: route.params.title })}
       />
     </Stack.Navigator>
   );

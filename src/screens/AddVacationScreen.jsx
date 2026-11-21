@@ -141,12 +141,18 @@ export default function AddVacationScreen({ navigation, route }) {
 
       if (isEditMode) {
         await vacationApi.update(vacationId, vacationData);
+        successHaptic();
+
+        navigation.popTo("MainTabs", {
+          screen: "Vacations",
+          params: { screen: "VacationsList", pop: true },
+        });
       } else {
         await vacationApi.create(vacationData);
-      }
+        successHaptic();
 
-      successHaptic();
-      navigation.goBack();
+        navigation.goBack();
+      }
     } catch (error) {
       Alert.alert("Грешка", "Отпускът не беше запазен. Опитайте отново.");
       setIsSaving(false);
