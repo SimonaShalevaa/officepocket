@@ -66,10 +66,32 @@ export default function VacationDetailsScreen({ route, navigation }) {
     navigation.navigate("AddVacation", { vacationId });
   };
 
+  const getDeleteMessage = () => {
+    const status = getVacationStatus(vacation);
+    const days = countWorkingDays(vacation.startDate, vacation.endDate);
+
+    if (status === "current") {
+      return "Този отпуск тече в момента. Сигурни ли сте, че искате да го изтриете?";
+    }
+
+    if (status === "used" && vacation.type === "paid") {
+      const daysText =
+        days === 1 ? "1 ден ще се върне" : `${days} дни ще се върнат`;
+
+      return `Този отпуск вече е минал. Ако го изтриете, ${daysText} към оставащия платен отпуск. Сигурни ли сте?`;
+    }
+
+    if (status === "used") {
+      return "Този отпуск вече е минал. Сигурни ли сте, че искате да го изтриете?";
+    }
+
+    return "Сигурни ли сте, че искате да изтриете този отпуск? Това не може да бъде отменено.";
+  };
+
   const deleteHandler = () => {
     Alert.alert(
       "Изтриване на отпуск",
-      "Сигурни ли сте, че искате да изтриете този отпуск? Това не може да бъде отменено.",
+      getDeleteMessage(),
       [
         { text: "Отказ", style: "cancel" },
         { text: "Изтрий", style: "destructive", onPress: confirmDeleteHandler },
