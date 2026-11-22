@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 
 import AuthProvider from "./contexts/auth/AuthProvider";
 import RootNavigator from "./navigation/RootNavigator";
+import OfflineBanner from "./components/OfflineBanner";
 
 export default function App() {
   return (
@@ -16,6 +17,8 @@ export default function App() {
           <NavigationContainer>
             <RootNavigator />
           </NavigationContainer>
+
+          <OfflineBanner />
         </AuthProvider>
       </KeyboardProvider>
     </SafeAreaProvider>
