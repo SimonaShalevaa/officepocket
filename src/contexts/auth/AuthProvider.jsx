@@ -64,6 +64,11 @@ export default function AuthProvider({ children }) {
     await clearSession();
   };
 
+  const updateName = async (name) => {
+    const updatedUser = await authApi.updateName(name);
+    setUser(updatedUser);
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
@@ -71,6 +76,7 @@ export default function AuthProvider({ children }) {
     login,
     register,
     logout,
+    updateName,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

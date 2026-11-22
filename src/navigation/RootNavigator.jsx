@@ -9,6 +9,7 @@ import AuthNavigator from "./AuthNavigator";
 import AddTransactionScreen from "../screens/AddTransactionScreen";
 import AddDocumentScreen from "../screens/AddDocumentScreen";
 import AddVacationScreen from "../screens/AddVacationScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
 import PendingPaymentsScreen from "../screens/PendingPaymentsScreen";
 import TransactionDetailsScreen from "../screens/TransactionDetailsScreen";
 import AppHeader from "./AppHeader";
@@ -57,6 +58,11 @@ export default function RootNavigator() {
             options={({ route }) => ({
               title: route.params?.vacationId ? "Редакция" : "Нов отпуск",
             })}
+          />
+          <Stack.Screen
+            name="EditProfile"
+            component={EditProfileScreen}
+            options={{ title: "Редакция на профила" }}
           />
           <Stack.Screen
             name="PendingPayments"

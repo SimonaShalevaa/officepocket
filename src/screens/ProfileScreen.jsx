@@ -5,7 +5,7 @@ import { useAuthContext } from "../contexts/auth/AuthContext";
 
 import AppButton from "../components/AppButton";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const { user, logout } = useAuthContext();
 
   return (
@@ -18,6 +18,12 @@ export default function ProfileScreen() {
 
       <Text style={styles.name}>{user.name}</Text>
       <Text style={styles.email}>{user.email}</Text>
+
+      <AppButton
+        title="Редактирай профила"
+        onPress={() => navigation.navigate("EditProfile")}
+        style={styles.editButton}
+      />
 
       <AppButton
         title="Изход"
@@ -61,8 +67,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 4,
   },
-  logoutButton: {
+  editButton: {
     alignSelf: "stretch",
     marginTop: 32,
+  },
+  logoutButton: {
+    alignSelf: "stretch",
+    marginTop: 12,
   },
 });

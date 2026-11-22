@@ -1,4 +1,4 @@
-import { authClient } from "./api";
+import api, { authClient, SUPABASE_URL } from "./api";
 
 export async function register(name, email, password) {
   const response = await authClient.post("/signup", {
@@ -27,14 +27,26 @@ export async function refreshSession(refreshToken) {
   return transformSession(response.data);
 }
 
+export async function updateName(name) {
+  const response = await api.put(`${SUPABASE_URL}/auth/v1/user`, {
+    data: { name },
+  });
+
+  return transformUser(response.data);
+}
+
 function transformSession(data) {
   return {
     accessToken: data.access_token,
     refreshToken: data.refresh_token,
-    user: {
-      id: data.user.id,
-      email: data.user.email,
-      name: data.user.user_metadata?.name ?? data.user.email.split("@")[0],
-    },
+    user: transformUser(data.user),
+  };
+}
+
+function transformUser(user) {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.user_metadata?.name ?? user.email.split("@")[0],
   };
 }

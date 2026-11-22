@@ -12,6 +12,9 @@ export function validateName(name) {
   if (value.length < 2) {
     return "Името трябва да е поне 2 символа";
   }
+  if (value.length > 50) {
+    return "Името може да е най-много 50 символа";
+  }
 
   return "";
 }
