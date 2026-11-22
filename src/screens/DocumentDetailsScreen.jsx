@@ -7,9 +7,11 @@ import {
   ScrollView,
   Alert,
   RefreshControl,
+  Pressable,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import * as Sharing from "expo-sharing";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { colors } from "../theme";
 import { warningHaptic } from "../utils/haptics";
@@ -17,6 +19,7 @@ import { documentApi } from "../api";
 import { documentTypeLabels, formatDate } from "../utils/formatUtils";
 
 import DetailsRow from "../components/DetailsRow";
+import ImageViewer from "../components/ImageViewer";
 import AppButton from "../components/AppButton";
 import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
@@ -29,6 +32,7 @@ export default function DocumentDetailsScreen({ route, navigation }) {
   const [error, setError] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [isImageOpen, setIsImageOpen] = useState(false);
 
   const loadDocument = async () => {
     try {
@@ -136,12 +140,22 @@ export default function DocumentDetailsScreen({ route, navigation }) {
         />
       }
     >
-      <View style={styles.imageBox}>
-        <Image
-          source={{ uri: document.imageUrl }}
-          style={styles.image}
-        />
-      </View>
+      <Pressable
+        style={({ pressed }) => [styles.imageBox, pressed && styles.pressed]}
+        onPress={() => setIsImageOpen(true)}
+      >
+        <Image source={{ uri: document.imageUrl }} style={styles.image} />
+        <View style={styles.expandIcon}>
+          <Ionicons name="expand-outline" size={18} color={colors.white} />
+        </View>
+      </Pressable>
+
+      <ImageViewer
+        visible={isImageOpen}
+        imageUrl={document.imageUrl}
+        title={document.title}
+        onClose={() => setIsImageOpen(false)}
+      />
 
       <View style={styles.infoBox}>
         <DetailsRow label="Вид" value={documentTypeLabels[document.type]} />
@@ -196,6 +210,17 @@ const styles = StyleSheet.create({
     width: "100%",
     aspectRatio: 3 / 4,
     resizeMode: "contain",
+  },
+  pressed: {
+    opacity: 0.8,
+  },
+  expandIcon: {
+    position: "absolute",
+    right: 12,
+    bottom: 12,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 16,
+    padding: 7,
   },
   infoBox: {
     backgroundColor: colors.card,
