@@ -35,6 +35,14 @@ export async function updateName(name) {
   return transformUser(response.data);
 }
 
+export async function updateAvatarPath(avatarPath) {
+  const response = await api.put(`${SUPABASE_URL}/auth/v1/user`, {
+    data: { avatar_path: avatarPath },
+  });
+
+  return transformUser(response.data);
+}
+
 function transformSession(data) {
   return {
     accessToken: data.access_token,
@@ -48,5 +56,6 @@ function transformUser(user) {
     id: user.id,
     email: user.email,
     name: user.user_metadata?.name ?? user.email.split("@")[0],
+    avatarPath: user.user_metadata?.avatar_path ?? null,
   };
 }

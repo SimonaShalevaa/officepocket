@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 import * as SecureStore from "expo-secure-store";
 
 import { AuthContext } from "./AuthContext";
-import { authApi } from "../../api";
+import { authApi, avatarApi } from "../../api";
 import {
   setAccessToken,
   setOnSessionExpired,
@@ -69,6 +69,27 @@ export default function AuthProvider({ children }) {
     setUser(updatedUser);
   };
 
+  const updateAvatar = async (imageUri) => {
+    const oldPath = user.avatarPath;
+    const newPath = await avatarApi.upload(user.id, imageUri);
+    const updatedUser = await authApi.updateAvatarPath(newPath);
+    setUser(updatedUser);
+
+    if (oldPath) {
+      await avatarApi.remove(oldPath).catch(() => {});
+    }
+  };
+
+  const removeAvatar = async () => {
+    const oldPath = user.avatarPath;
+    const updatedUser = await authApi.updateAvatarPath(null);
+    setUser(updatedUser);
+
+    if (oldPath) {
+      await avatarApi.remove(oldPath).catch(() => {});
+    }
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
@@ -77,6 +98,8 @@ export default function AuthProvider({ children }) {
     register,
     logout,
     updateName,
+    updateAvatar,
+    removeAvatar,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
