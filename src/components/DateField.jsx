@@ -36,6 +36,8 @@ export default function DateField({ label, value, onChange, error }) {
         <DateTimePicker
           value={value}
           mode="date"
+          positiveButton={{ label: "OK", textColor: colors.primary }}
+          negativeButton={{ label: "Отказ", textColor: colors.textMuted }}
           onValueChange={valueChangeHandler}
           onDismiss={() => setIsPickerVisible(false)}
         />

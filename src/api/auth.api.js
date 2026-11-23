@@ -27,6 +27,12 @@ export async function refreshSession(refreshToken) {
   return transformSession(response.data);
 }
 
+export async function getUser() {
+  const response = await api.get(`${SUPABASE_URL}/auth/v1/user`);
+
+  return transformUser(response.data);
+}
+
 export async function updateName(name) {
   const response = await api.put(`${SUPABASE_URL}/auth/v1/user`, {
     data: { name },

@@ -8,6 +8,8 @@ import {
   Alert,
   Linking,
   ActivityIndicator,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -20,22 +22,43 @@ import { successHaptic } from "../utils/haptics";
 import AppButton from "../components/AppButton";
 
 export default function ProfileScreen({ navigation }) {
-  const { user, logout, updateAvatar, removeAvatar } = useAuthContext();
+  const { user, logout, updateAvatar, removeAvatar, refreshUser } =
+    useAuthContext();
 
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
+  const loadAvatar = async () => {
     if (!user.avatarPath) {
       setAvatarUrl(null);
       return;
     }
 
-    avatarApi
-      .getUrl(user.avatarPath)
-      .then(setAvatarUrl)
-      .catch(() => setAvatarUrl(null));
+    try {
+      const url = await avatarApi.getUrl(user.avatarPath);
+      setAvatarUrl(url);
+    } catch (err) {
+      setAvatarUrl(null);
+    }
+  };
+
+  useEffect(() => {
+    loadAvatar();
   }, [user.avatarPath]);
+
+  const refreshHandler = async () => {
+    setIsRefreshing(true);
+
+    try {
+      await refreshUser();
+      await loadAvatar();
+    } catch (err) {
+      Alert.alert("Грешка", "Данните не бяха обновени. Проверете интернета.");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const saveAvatar = async (result) => {
     if (result.canceled) {
@@ -135,7 +158,17 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={refreshHandler}
+          colors={[colors.primary]}
+          tintColor={colors.primary}
+        />
+      }
+    >
       <Pressable
         style={({ pressed }) => [styles.avatar, pressed && styles.pressed]}
         onPress={avatarPressHandler}
@@ -183,13 +216,13 @@ export default function ProfileScreen({ navigation }) {
         onPress={logoutHandler}
         style={styles.logoutButton}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",

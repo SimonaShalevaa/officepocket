@@ -64,6 +64,11 @@ export default function AuthProvider({ children }) {
     await clearSession();
   };
 
+  const refreshUser = async () => {
+    const updatedUser = await authApi.getUser();
+    setUser(updatedUser);
+  };
+
   const updateName = async (name) => {
     const updatedUser = await authApi.updateName(name);
     setUser(updatedUser);
@@ -108,6 +113,7 @@ export default function AuthProvider({ children }) {
     register,
     logout,
     updateName,
+    refreshUser,
     updateAvatar,
     removeAvatar,
     changePassword,
