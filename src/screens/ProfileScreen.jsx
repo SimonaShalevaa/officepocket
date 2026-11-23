@@ -102,6 +102,17 @@ export default function ProfileScreen({ navigation }) {
     }
   };
 
+  const logoutHandler = () => {
+    Alert.alert(
+      "Изход",
+      "Сигурни ли сте, че искате да излезете от профила си?",
+      [
+        { text: "Отказ", style: "cancel" },
+        { text: "Изход", style: "destructive", onPress: logout },
+      ],
+    );
+  };
+
   const avatarPressHandler = () => {
     const buttons = [
       { text: "Снимай", onPress: takePhotoHandler },
@@ -162,7 +173,7 @@ export default function ProfileScreen({ navigation }) {
       <AppButton
         title="Изход"
         variant="outline"
-        onPress={logout}
+        onPress={logoutHandler}
         style={styles.logoutButton}
       />
     </View>
