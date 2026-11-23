@@ -63,7 +63,7 @@ export default function RootNavigator() {
           <Stack.Screen
             name="EditProfile"
             component={EditProfileScreen}
-            options={{ title: "Редакция на профила" }}
+            options={{ title: "Редакция" }}
           />
           <Stack.Screen
             name="ChangePassword"

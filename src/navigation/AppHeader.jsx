@@ -1,3 +1,4 @@
+import { StyleSheet } from "react-native";
 import {
   Header,
   HeaderBackButton,
@@ -9,6 +10,8 @@ export default function AppHeader({ navigation, route, options, back }) {
     <Header
       {...options}
       title={getHeaderTitle(options, route.name)}
+      headerTitleContainerStyle={styles.titleContainer}
+      headerRightContainerStyle={styles.rightContainer}
       headerLeft={
         back
           ? (props) => (
@@ -19,3 +22,12 @@ export default function AppHeader({ navigation, route, options, back }) {
     />
   );
 }
+
+const styles = StyleSheet.create({
+  titleContainer: {
+    flexShrink: 1,
+  },
+  rightContainer: {
+    flexShrink: 0,
+  },
+});
