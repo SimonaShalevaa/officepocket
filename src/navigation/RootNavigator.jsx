@@ -10,6 +10,7 @@ import AddTransactionScreen from "../screens/AddTransactionScreen";
 import AddDocumentScreen from "../screens/AddDocumentScreen";
 import AddVacationScreen from "../screens/AddVacationScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
+import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 import PendingPaymentsScreen from "../screens/PendingPaymentsScreen";
 import TransactionDetailsScreen from "../screens/TransactionDetailsScreen";
 import AppHeader from "./AppHeader";
@@ -63,6 +64,11 @@ export default function RootNavigator() {
             name="EditProfile"
             component={EditProfileScreen}
             options={{ title: "Редакция на профила" }}
+          />
+          <Stack.Screen
+            name="ChangePassword"
+            component={ChangePasswordScreen}
+            options={{ title: "Смяна на парола" }}
           />
           <Stack.Screen
             name="PendingPayments"

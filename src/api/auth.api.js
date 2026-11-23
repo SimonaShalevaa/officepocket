@@ -35,6 +35,10 @@ export async function updateName(name) {
   return transformUser(response.data);
 }
 
+export async function updatePassword(password) {
+  await api.put(`${SUPABASE_URL}/auth/v1/user`, { password });
+}
+
 export async function updateAvatarPath(avatarPath) {
   const response = await api.put(`${SUPABASE_URL}/auth/v1/user`, {
     data: { avatar_path: avatarPath },

@@ -43,6 +43,19 @@ export function validatePassword(password) {
   return "";
 }
 
+export function validateNewPassword(currentPassword, newPassword) {
+  const error = validatePassword(newPassword);
+
+  if (error) {
+    return error;
+  }
+  if (newPassword === currentPassword) {
+    return "Новата парола трябва да е различна от текущата";
+  }
+
+  return "";
+}
+
 export function validateConfirmPassword(password, confirmPassword) {
   if (!confirmPassword) {
     return "Повторете паролата";

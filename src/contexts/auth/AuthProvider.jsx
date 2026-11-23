@@ -69,6 +69,16 @@ export default function AuthProvider({ children }) {
     setUser(updatedUser);
   };
 
+  const checkPassword = async (password) => {
+    await authApi.login(user.email, password);
+  };
+
+  const changePassword = async (currentPassword, newPassword) => {
+    const session = await authApi.login(user.email, currentPassword);
+    await saveSession(session);
+    await authApi.updatePassword(newPassword);
+  };
+
   const updateAvatar = async (imageUri) => {
     const oldPath = user.avatarPath;
     const newPath = await avatarApi.upload(user.id, imageUri);
@@ -100,6 +110,8 @@ export default function AuthProvider({ children }) {
     updateName,
     updateAvatar,
     removeAvatar,
+    changePassword,
+    checkPassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

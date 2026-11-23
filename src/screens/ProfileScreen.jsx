@@ -171,6 +171,13 @@ export default function ProfileScreen({ navigation }) {
       />
 
       <AppButton
+        title="Смяна на парола"
+        variant="outline"
+        onPress={() => navigation.navigate("ChangePassword")}
+        style={styles.secondaryButton}
+      />
+
+      <AppButton
         title="Изход"
         variant="outline"
         onPress={logoutHandler}
@@ -243,6 +250,10 @@ const styles = StyleSheet.create({
   editButton: {
     alignSelf: "stretch",
     marginTop: 32,
+  },
+  secondaryButton: {
+    alignSelf: "stretch",
+    marginTop: 12,
   },
   logoutButton: {
     alignSelf: "stretch",

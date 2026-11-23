@@ -11,6 +11,9 @@ export function getAuthErrorMessage(error) {
   if (code === "user_already_exists") {
     return "Вече има профил с този имейл";
   }
+  if (code === "same_password") {
+    return "Новата парола трябва да е различна от текущата";
+  }
   if (code === "weak_password") {
     return "Паролата е твърде слаба";
   }
