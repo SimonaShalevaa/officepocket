@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { warningHaptic } from "../utils/haptics";
 import { transactionApi } from "../api";
 import { typeLabels, formatAmount, formatDate } from "../utils/formatUtils";
@@ -20,6 +20,9 @@ import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
 export default function TransactionDetailsScreen({ route, navigation }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const { transactionId } = route.params;
 
   const [transaction, setTransaction] = useState(null);
@@ -160,69 +163,71 @@ export default function TransactionDetailsScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 16,
-    gap: 16,
-  },
-  centered: {
-    flex: 1,
-    backgroundColor: colors.background,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  notFound: {
-    color: colors.textMuted,
-    fontSize: 16,
-  },
-  summary: {
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    paddingVertical: 28,
-    alignItems: "center",
-    gap: 8,
-  },
-  summaryLabel: {
-    color: colors.textMuted,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  amount: {
-    color: colors.text,
-    fontSize: 34,
-    fontWeight: "bold",
-  },
-  amountIncome: {
-    color: colors.primary,
-  },
-  badge: {
-    backgroundColor: colors.primaryLight,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 10,
-    marginTop: 4,
-  },
-  badgePending: {
-    backgroundColor: colors.pendingLight,
-  },
-  badgeText: {
-    color: colors.primary,
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  badgeTextPending: {
-    color: colors.pending,
-  },
-  infoBox: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-  },
-  actions: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  actionButton: {
-    flex: 1,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 16,
+      gap: 16,
+    },
+    centered: {
+      flex: 1,
+      backgroundColor: colors.background,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    notFound: {
+      color: colors.textMuted,
+      fontSize: 16,
+    },
+    summary: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      paddingVertical: 28,
+      alignItems: "center",
+      gap: 8,
+    },
+    summaryLabel: {
+      color: colors.textMuted,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    amount: {
+      color: colors.text,
+      fontSize: 34,
+      fontWeight: "bold",
+    },
+    amountIncome: {
+      color: colors.primary,
+    },
+    badge: {
+      backgroundColor: colors.primaryLight,
+      paddingHorizontal: 12,
+      paddingVertical: 5,
+      borderRadius: 10,
+      marginTop: 4,
+    },
+    badgePending: {
+      backgroundColor: colors.pendingLight,
+    },
+    badgeText: {
+      color: colors.primary,
+      fontSize: 12,
+      fontWeight: "bold",
+    },
+    badgeTextPending: {
+      color: colors.pending,
+    },
+    infoBox: {
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+    },
+    actions: {
+      flexDirection: "row",
+      gap: 12,
+    },
+    actionButton: {
+      flex: 1,
+    },
+  });
+}

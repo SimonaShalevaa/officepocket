@@ -11,7 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Button } from "@react-navigation/elements";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { selectionHaptic } from "../utils/haptics";
 import { listReducer, initialListState } from "../reducers/listReducer";
 import { transactionApi } from "../api";
@@ -27,6 +27,9 @@ import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
 export default function DashboardScreen({ navigation }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const today = new Date();
 
   const [state, dispatch] = useReducer(listReducer, initialListState);
@@ -214,115 +217,117 @@ export default function DashboardScreen({ navigation }) {
         </Pressable>
       )}
 
-      <Button screen="Finances" variant="filled" color={colors.primary}>
+      <Button screen="Finances" variant="filled" color={colors.primaryButton}>
         Към финансите
       </Button>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 16,
-    gap: 12,
-  },
-  monthBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 8,
-  },
-  arrow: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  arrowPressed: {
-    opacity: 0.6,
-  },
-  arrowDisabled: {
-    backgroundColor: colors.divider,
-  },
-  monthText: {
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  balanceCard: {
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    paddingVertical: 22,
-    alignItems: "center",
-    gap: 6,
-  },
-  cardLabel: {
-    color: colors.textMuted,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  balance: {
-    fontSize: 32,
-    fontWeight: "bold",
-  },
-  positive: {
-    color: colors.primary,
-  },
-  negative: {
-    color: colors.error,
-  },
-  row: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  smallCard: {
-    flex: 1,
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 14,
-    gap: 6,
-  },
-  smallLabelRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  smallValue: {
-    color: colors.text,
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  infoBox: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-  },
-  pendingCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: colors.pendingLight,
-    borderRadius: 16,
-    padding: 14,
-  },
-  pendingCardPressed: {
-    opacity: 0.7,
-  },
-  pendingInfo: {
-    flex: 1,
-  },
-  pendingTitle: {
-    color: colors.pending,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  pendingText: {
-    color: colors.pending,
-    fontSize: 13,
-    marginTop: 2,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 16,
+      gap: 12,
+    },
+    monthBox: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      padding: 8,
+    },
+    arrow: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      backgroundColor: colors.primaryLight,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    arrowPressed: {
+      opacity: 0.6,
+    },
+    arrowDisabled: {
+      backgroundColor: colors.divider,
+    },
+    monthText: {
+      color: colors.text,
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    balanceCard: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      paddingVertical: 22,
+      alignItems: "center",
+      gap: 6,
+    },
+    cardLabel: {
+      color: colors.textMuted,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    balance: {
+      fontSize: 32,
+      fontWeight: "bold",
+    },
+    positive: {
+      color: colors.primary,
+    },
+    negative: {
+      color: colors.error,
+    },
+    row: {
+      flexDirection: "row",
+      gap: 12,
+    },
+    smallCard: {
+      flex: 1,
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      padding: 14,
+      gap: 6,
+    },
+    smallLabelRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+    },
+    smallValue: {
+      color: colors.text,
+      fontSize: 18,
+      fontWeight: "bold",
+    },
+    infoBox: {
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+    },
+    pendingCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      backgroundColor: colors.pendingLight,
+      borderRadius: 16,
+      padding: 14,
+    },
+    pendingCardPressed: {
+      opacity: 0.7,
+    },
+    pendingInfo: {
+      flex: 1,
+    },
+    pendingTitle: {
+      color: colors.pending,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+    pendingText: {
+      color: colors.pending,
+      fontSize: 13,
+      marginTop: 2,
+    },
+  });
+}

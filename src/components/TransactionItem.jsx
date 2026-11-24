@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { typeLabels, formatAmount, formatDate } from "../utils/formatUtils";
 
 export default function TransactionItem({
@@ -14,6 +14,9 @@ export default function TransactionItem({
   isPaid,
   fromPending = false,
 }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const navigation = useNavigation();
   const isIncome = type === "income";
 
@@ -51,50 +54,52 @@ export default function TransactionItem({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 12,
-  },
-  cardPressed: {
-    opacity: 0.6,
-  },
-  info: {
-    flex: 1,
-  },
-  title: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  meta: {
-    color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 4,
-  },
-  right: {
-    alignItems: "flex-end",
-  },
-  amount: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  amountIncome: {
-    color: colors.primary,
-  },
-  status: {
-    color: colors.primary,
-    fontSize: 11,
-    fontWeight: "bold",
-    marginTop: 4,
-  },
-  statusPending: {
-    color: colors.pending,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      gap: 12,
+    },
+    cardPressed: {
+      opacity: 0.6,
+    },
+    info: {
+      flex: 1,
+    },
+    title: {
+      color: colors.text,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+    meta: {
+      color: colors.textMuted,
+      fontSize: 12,
+      marginTop: 4,
+    },
+    right: {
+      alignItems: "flex-end",
+    },
+    amount: {
+      color: colors.text,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+    amountIncome: {
+      color: colors.primary,
+    },
+    status: {
+      color: colors.primary,
+      fontSize: 11,
+      fontWeight: "bold",
+      marginTop: 4,
+    },
+    statusPending: {
+      color: colors.pending,
+    },
+  });
+}

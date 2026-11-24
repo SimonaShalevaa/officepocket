@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Pressable, Alert, Switch } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { errorHaptic, successHaptic } from "../utils/haptics";
 import { transactionApi } from "../api";
 import {
@@ -24,6 +24,9 @@ import {
 } from "../utils/validation";
 
 export default function AddTransactionScreen({ navigation, route }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const transactionId = route.params?.transactionId;
   const isEditMode = !!transactionId;
 
@@ -152,6 +155,7 @@ export default function AddTransactionScreen({ navigation, route }) {
     });
   }, [
     navigation,
+    colors,
     type,
     title,
     category,
@@ -228,54 +232,56 @@ export default function AddTransactionScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-    gap: 18,
-  },
-  field: {
-    gap: 6,
-  },
-  label: {
-    color: colors.text,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  switchRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.card,
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 12,
-  },
-  switchInfo: {
-    flex: 1,
-  },
-  switchTitle: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  switchSubtitle: {
-    color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 2,
-  },
-  saveButton: {
-    marginRight: 16,
-    backgroundColor: colors.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-  },
-  saveButtonPressed: {
-    opacity: 0.8,
-  },
-  saveText: {
-    color: colors.white,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 20,
+      gap: 18,
+    },
+    field: {
+      gap: 6,
+    },
+    label: {
+      color: colors.text,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    switchRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.card,
+      borderRadius: 14,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      gap: 12,
+    },
+    switchInfo: {
+      flex: 1,
+    },
+    switchTitle: {
+      color: colors.text,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+    switchSubtitle: {
+      color: colors.textMuted,
+      fontSize: 12,
+      marginTop: 2,
+    },
+    saveButton: {
+      marginRight: 16,
+      backgroundColor: colors.primaryButton,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+    },
+    saveButtonPressed: {
+      opacity: 0.8,
+    },
+    saveText: {
+      color: colors.white,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+  });
+}
