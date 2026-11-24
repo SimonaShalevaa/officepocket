@@ -2,7 +2,7 @@ import { useState, useRef, useLayoutEffect } from "react";
 import { StyleSheet, Text, Pressable, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { useAuthContext } from "../contexts/auth/AuthContext";
 import {
   validatePassword,
@@ -16,6 +16,9 @@ import { successHaptic, errorHaptic } from "../utils/haptics";
 import FormField from "../components/FormField";
 
 export default function ChangePasswordScreen({ navigation }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const { changePassword, checkPassword } = useAuthContext();
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -105,7 +108,14 @@ export default function ChangePasswordScreen({ navigation }) {
         </Pressable>
       ),
     });
-  }, [navigation, currentPassword, newPassword, confirmPassword, isSaving]);
+  }, [
+    navigation,
+    colors,
+    currentPassword,
+    newPassword,
+    confirmPassword,
+    isSaving,
+  ]);
 
   return (
     <KeyboardAwareScrollView
@@ -150,24 +160,26 @@ export default function ChangePasswordScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-    gap: 18,
-  },
-  saveButton: {
-    marginRight: 16,
-    backgroundColor: colors.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-  },
-  saveButtonPressed: {
-    opacity: 0.8,
-  },
-  saveText: {
-    color: colors.white,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 20,
+      gap: 18,
+    },
+    saveButton: {
+      marginRight: 16,
+      backgroundColor: colors.primaryButton,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+    },
+    saveButtonPressed: {
+      opacity: 0.8,
+    },
+    saveText: {
+      color: colors.white,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+  });
+}

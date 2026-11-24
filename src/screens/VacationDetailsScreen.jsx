@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { vacationApi } from "../api";
 import { formatDate } from "../utils/formatUtils";
 import {
@@ -26,6 +26,9 @@ import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
 export default function VacationDetailsScreen({ route, navigation }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const { vacationId } = route.params;
 
   const [vacation, setVacation] = useState(null);
@@ -183,68 +186,70 @@ export default function VacationDetailsScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 16,
-    gap: 16,
-  },
-  centered: {
-    flex: 1,
-    backgroundColor: colors.background,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  notFound: {
-    color: colors.textMuted,
-    fontSize: 16,
-  },
-  summary: {
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    paddingVertical: 26,
-    paddingHorizontal: 16,
-    alignItems: "center",
-    gap: 8,
-  },
-  summaryLabel: {
-    color: colors.textMuted,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  period: {
-    color: colors.text,
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  badge: {
-    backgroundColor: colors.primaryLight,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 10,
-    marginTop: 4,
-  },
-  badgeUpcoming: {
-    backgroundColor: colors.pendingLight,
-  },
-  badgeText: {
-    color: colors.primary,
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  badgeTextUpcoming: {
-    color: colors.pending,
-  },
-  infoBox: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-  },
-  actions: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  actionButton: {
-    flex: 1,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 16,
+      gap: 16,
+    },
+    centered: {
+      flex: 1,
+      backgroundColor: colors.background,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    notFound: {
+      color: colors.textMuted,
+      fontSize: 16,
+    },
+    summary: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      paddingVertical: 26,
+      paddingHorizontal: 16,
+      alignItems: "center",
+      gap: 8,
+    },
+    summaryLabel: {
+      color: colors.textMuted,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    period: {
+      color: colors.text,
+      fontSize: 24,
+      fontWeight: "bold",
+      textAlign: "center",
+    },
+    badge: {
+      backgroundColor: colors.primaryLight,
+      paddingHorizontal: 12,
+      paddingVertical: 5,
+      borderRadius: 10,
+      marginTop: 4,
+    },
+    badgeUpcoming: {
+      backgroundColor: colors.pendingLight,
+    },
+    badgeText: {
+      color: colors.primary,
+      fontSize: 12,
+      fontWeight: "bold",
+    },
+    badgeTextUpcoming: {
+      color: colors.pending,
+    },
+    infoBox: {
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+    },
+    actions: {
+      flexDirection: "row",
+      gap: 12,
+    },
+    actionButton: {
+      flex: 1,
+    },
+  });
+}

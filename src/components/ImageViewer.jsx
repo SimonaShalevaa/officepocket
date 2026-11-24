@@ -6,8 +6,6 @@ import {
 import { StatusBar } from "expo-status-bar";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
-
 export default function ImageViewer({ visible, imageUrl, title, onClose }) {
   return (
     <Modal
@@ -28,7 +26,7 @@ export default function ImageViewer({ visible, imageUrl, title, onClose }) {
               hitSlop={12}
               accessibilityLabel="Назад"
             >
-              <Ionicons name="arrow-back" size={26} color={colors.white} />
+              <Ionicons name="arrow-back" size={26} color={"white"} />
             </Pressable>
             <Text style={styles.title} numberOfLines={1}>
               {title}
@@ -60,7 +58,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    color: colors.white,
+    color: "white",
     fontSize: 18,
     fontWeight: "bold",
   },

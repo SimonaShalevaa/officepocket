@@ -2,7 +2,7 @@ import { useState, useLayoutEffect } from "react";
 import { StyleSheet, View, Text, Pressable, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { useAuthContext } from "../contexts/auth/AuthContext";
 import { validateName } from "../utils/validation";
 import { successHaptic, errorHaptic } from "../utils/haptics";
@@ -10,6 +10,9 @@ import { successHaptic, errorHaptic } from "../utils/haptics";
 import FormField from "../components/FormField";
 
 export default function EditProfileScreen({ navigation }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const { user, updateName } = useAuthContext();
 
   const [name, setName] = useState(user.name);
@@ -63,7 +66,7 @@ export default function EditProfileScreen({ navigation }) {
         </Pressable>
       ),
     });
-  }, [navigation, name, isSaving]);
+  }, [navigation, colors, name, isSaving]);
 
   return (
     <KeyboardAwareScrollView
@@ -92,44 +95,46 @@ export default function EditProfileScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-    gap: 18,
-  },
-  infoBox: {
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
-    gap: 4,
-  },
-  infoLabel: {
-    color: colors.textMuted,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  infoValue: {
-    color: colors.text,
-    fontSize: 16,
-  },
-  infoHint: {
-    color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 4,
-  },
-  saveButton: {
-    marginRight: 16,
-    backgroundColor: colors.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-  },
-  saveButtonPressed: {
-    opacity: 0.8,
-  },
-  saveText: {
-    color: colors.white,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 20,
+      gap: 18,
+    },
+    infoBox: {
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      padding: 16,
+      gap: 4,
+    },
+    infoLabel: {
+      color: colors.textMuted,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    infoValue: {
+      color: colors.text,
+      fontSize: 16,
+    },
+    infoHint: {
+      color: colors.textMuted,
+      fontSize: 12,
+      marginTop: 4,
+    },
+    saveButton: {
+      marginRight: 16,
+      backgroundColor: colors.primaryButton,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+    },
+    saveButtonPressed: {
+      opacity: 0.8,
+    },
+    saveText: {
+      color: colors.white,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+  });
+}

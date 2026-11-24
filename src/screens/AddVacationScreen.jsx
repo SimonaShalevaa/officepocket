@@ -4,7 +4,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { vacationApi } from "../api";
 import { toDateString, parseDate } from "../utils/formatUtils";
 import {
@@ -26,6 +26,9 @@ import DateField from "../components/DateField";
 import LoadingView from "../components/LoadingView";
 
 export default function AddVacationScreen({ navigation, route }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const vacationId = route.params?.vacationId;
   const isEditMode = !!vacationId;
 
@@ -176,7 +179,7 @@ export default function AddVacationScreen({ navigation, route }) {
         </Pressable>
       ),
     });
-  }, [navigation, type, startDate, endDate, note, isSaving]);
+  }, [navigation, colors, type, startDate, endDate, note, isSaving]);
 
   if (isLoading) {
     return <LoadingView />;
@@ -240,47 +243,49 @@ export default function AddVacationScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-    gap: 18,
-  },
-  field: {
-    gap: 6,
-  },
-  label: {
-    color: colors.text,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  infoBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    backgroundColor: colors.primaryLight,
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  infoText: {
-    flex: 1,
-    color: colors.primary,
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  saveButton: {
-    marginRight: 16,
-    backgroundColor: colors.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-  },
-  saveButtonPressed: {
-    opacity: 0.8,
-  },
-  saveText: {
-    color: colors.white,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 20,
+      gap: 18,
+    },
+    field: {
+      gap: 6,
+    },
+    label: {
+      color: colors.text,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    infoBox: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      backgroundColor: colors.primaryLight,
+      borderRadius: 12,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+    },
+    infoText: {
+      flex: 1,
+      color: colors.primary,
+      fontSize: 14,
+      fontWeight: "500",
+    },
+    saveButton: {
+      marginRight: 16,
+      backgroundColor: colors.primaryButton,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+    },
+    saveButtonPressed: {
+      opacity: 0.8,
+    },
+    saveText: {
+      color: colors.white,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+  });
+}

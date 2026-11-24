@@ -29,5 +29,3 @@ export const darkColors = {
   error: "#F07167",
   white: "#FFFFFF",
 };
-
-export const colors = lightColors;

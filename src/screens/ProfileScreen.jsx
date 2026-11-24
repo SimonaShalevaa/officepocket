@@ -14,7 +14,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { useAuthContext } from "../contexts/auth/AuthContext";
 import { avatarApi } from "../api";
 import { successHaptic } from "../utils/haptics";
@@ -22,6 +22,9 @@ import { successHaptic } from "../utils/haptics";
 import AppButton from "../components/AppButton";
 
 export default function ProfileScreen({ navigation }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const { user, logout, updateAvatar, removeAvatar, refreshUser } =
     useAuthContext();
 
@@ -220,76 +223,78 @@ export default function ProfileScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: colors.background,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 24,
-  },
-  avatar: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  pressed: {
-    opacity: 0.8,
-  },
-  avatarImage: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 44,
-  },
-  avatarOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 44,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  cameraBadge: {
-    position: "absolute",
-    right: -2,
-    bottom: -2,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: colors.primary,
-    borderWidth: 2,
-    borderColor: colors.background,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarText: {
-    color: colors.primary,
-    fontSize: 36,
-    fontWeight: "bold",
-  },
-  name: {
-    color: colors.text,
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  email: {
-    color: colors.textMuted,
-    fontSize: 15,
-    marginTop: 4,
-  },
-  editButton: {
-    alignSelf: "stretch",
-    marginTop: 32,
-  },
-  secondaryButton: {
-    alignSelf: "stretch",
-    marginTop: 12,
-  },
-  logoutButton: {
-    alignSelf: "stretch",
-    marginTop: 12,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      backgroundColor: colors.background,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 24,
+    },
+    avatar: {
+      width: 88,
+      height: 88,
+      borderRadius: 44,
+      backgroundColor: colors.primaryLight,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 16,
+    },
+    pressed: {
+      opacity: 0.8,
+    },
+    avatarImage: {
+      width: "100%",
+      height: "100%",
+      borderRadius: 44,
+    },
+    avatarOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      borderRadius: 44,
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    cameraBadge: {
+      position: "absolute",
+      right: -2,
+      bottom: -2,
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      backgroundColor: colors.primaryButton,
+      borderWidth: 2,
+      borderColor: colors.background,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    avatarText: {
+      color: colors.primary,
+      fontSize: 36,
+      fontWeight: "bold",
+    },
+    name: {
+      color: colors.text,
+      fontSize: 24,
+      fontWeight: "bold",
+    },
+    email: {
+      color: colors.textMuted,
+      fontSize: 15,
+      marginTop: 4,
+    },
+    editButton: {
+      alignSelf: "stretch",
+      marginTop: 32,
+    },
+    secondaryButton: {
+      alignSelf: "stretch",
+      marginTop: 12,
+    },
+    logoutButton: {
+      alignSelf: "stretch",
+      marginTop: 12,
+    },
+  });
+}

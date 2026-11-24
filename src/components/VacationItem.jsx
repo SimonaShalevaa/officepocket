@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { formatDate } from "../utils/formatUtils";
 import {
   vacationTypeLabels,
@@ -11,6 +11,9 @@ import {
 } from "../utils/vacationUtils";
 
 export default function VacationItem({ id, type, startDate, endDate }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const navigation = useNavigation();
   const status = getVacationStatus({ startDate, endDate });
   const days = countWorkingDays(startDate, endDate);
@@ -49,47 +52,49 @@ export default function VacationItem({ id, type, startDate, endDate }) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 12,
-  },
-  cardPressed: {
-    opacity: 0.6,
-  },
-  info: {
-    flex: 1,
-  },
-  title: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  meta: {
-    color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 4,
-  },
-  badge: {
-    backgroundColor: colors.primaryLight,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-  },
-  badgeUpcoming: {
-    backgroundColor: colors.pendingLight,
-  },
-  badgeText: {
-    color: colors.primary,
-    fontSize: 11,
-    fontWeight: "bold",
-  },
-  badgeTextUpcoming: {
-    color: colors.pending,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      gap: 12,
+    },
+    cardPressed: {
+      opacity: 0.6,
+    },
+    info: {
+      flex: 1,
+    },
+    title: {
+      color: colors.text,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+    meta: {
+      color: colors.textMuted,
+      fontSize: 12,
+      marginTop: 4,
+    },
+    badge: {
+      backgroundColor: colors.primaryLight,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 8,
+    },
+    badgeUpcoming: {
+      backgroundColor: colors.pendingLight,
+    },
+    badgeText: {
+      color: colors.primary,
+      fontSize: 11,
+      fontWeight: "bold",
+    },
+    badgeTextUpcoming: {
+      color: colors.pending,
+    },
+  });
+}
