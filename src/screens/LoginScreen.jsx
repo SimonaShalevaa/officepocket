@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { StyleSheet, Text, Alert } from "react-native";
 import { Link, useFocusEffect } from "@react-navigation/native";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { errorHaptic } from "../utils/haptics";
 import { useAuthContext } from "../contexts/auth/AuthContext";
 import {
@@ -17,6 +17,9 @@ import AppButton from "../components/AppButton";
 import AuthLayout from "../components/AuthLayout";
 
 export default function LoginScreen() {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -117,17 +120,19 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    marginTop: 8,
-  },
-  footerText: {
-    color: colors.textMuted,
-    fontSize: 15,
-  },
-  link: {
-    color: colors.primary,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    button: {
+      marginTop: 8,
+    },
+    footerText: {
+      color: colors.textMuted,
+      fontSize: 15,
+    },
+    link: {
+      color: colors.primary,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+  });
+}
