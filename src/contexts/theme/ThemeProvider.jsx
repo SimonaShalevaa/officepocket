@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { DefaultTheme, DarkTheme } from "@react-navigation/native";
 import * as SystemUI from "expo-system-ui";
 
 import { ThemeContext } from "./ThemeContext";
+import usePersistedState from "../../hooks/usePersistedState";
 import { lightColors, darkColors } from "../../theme";
 
 export default function ThemeProvider({ children }) {
   const colorScheme = useColorScheme();
-  const [themeMode, setThemeMode] = useState("system");
+  const [themeMode, setThemeMode] = usePersistedState("themeMode", "system");
 
   const isDarkMode =
     themeMode === "system" ? colorScheme === "dark" : themeMode === "dark";
