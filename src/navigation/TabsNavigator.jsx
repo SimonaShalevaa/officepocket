@@ -1,4 +1,6 @@
+import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Link } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useThemeContext } from "../contexts/theme/ThemeContext";
@@ -103,6 +105,19 @@ export default function TabsNavigator() {
         component={ProfileScreen}
         options={{
           title: "Профил",
+          headerRight: () => (
+            <Link
+              screen="Settings"
+              accessibilityLabel="Настройки"
+              style={styles.settingsButton}
+            >
+              <Ionicons
+                name="settings-outline"
+                size={26}
+                color={colors.primary}
+              />
+            </Link>
+          ),
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
@@ -115,3 +130,9 @@ export default function TabsNavigator() {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  settingsButton: {
+    marginRight: 16,
+  },
+});

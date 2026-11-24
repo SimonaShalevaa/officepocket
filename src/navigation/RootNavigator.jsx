@@ -13,6 +13,7 @@ import AddDocumentScreen from "../screens/AddDocumentScreen";
 import AddVacationScreen from "../screens/AddVacationScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 import PendingPaymentsScreen from "../screens/PendingPaymentsScreen";
 import TransactionDetailsScreen from "../screens/TransactionDetailsScreen";
 import AppHeader from "./AppHeader";
@@ -70,6 +71,11 @@ export default function RootNavigator() {
               name="EditProfile"
               component={EditProfileScreen}
               options={{ title: "Редакция" }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{ title: "Настройки" }}
             />
             <Stack.Screen
               name="ChangePassword"

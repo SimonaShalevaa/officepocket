@@ -25,8 +25,7 @@ export default function ProfileScreen({ navigation }) {
   const { colors } = useThemeContext();
   const styles = createStyles(colors);
 
-  const { user, logout, updateAvatar, removeAvatar, refreshUser } =
-    useAuthContext();
+  const { user, updateAvatar, removeAvatar, refreshUser } = useAuthContext();
 
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -128,17 +127,6 @@ export default function ProfileScreen({ navigation }) {
     }
   };
 
-  const logoutHandler = () => {
-    Alert.alert(
-      "Изход",
-      "Сигурни ли сте, че искате да излезете от профила си?",
-      [
-        { text: "Отказ", style: "cancel" },
-        { text: "Изход", style: "destructive", onPress: logout },
-      ],
-    );
-  };
-
   const avatarPressHandler = () => {
     const buttons = [
       { text: "Снимай", onPress: takePhotoHandler },
@@ -204,20 +192,6 @@ export default function ProfileScreen({ navigation }) {
         title="Редактирай профила"
         onPress={() => navigation.navigate("EditProfile")}
         style={styles.editButton}
-      />
-
-      <AppButton
-        title="Смяна на парола"
-        variant="outline"
-        onPress={() => navigation.navigate("ChangePassword")}
-        style={styles.secondaryButton}
-      />
-
-      <AppButton
-        title="Изход"
-        variant="outline"
-        onPress={logoutHandler}
-        style={styles.logoutButton}
       />
     </ScrollView>
   );
@@ -287,14 +261,6 @@ function createStyles(colors) {
     editButton: {
       alignSelf: "stretch",
       marginTop: 32,
-    },
-    secondaryButton: {
-      alignSelf: "stretch",
-      marginTop: 12,
-    },
-    logoutButton: {
-      alignSelf: "stretch",
-      marginTop: 12,
     },
   });
 }
