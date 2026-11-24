@@ -13,7 +13,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import * as Sharing from "expo-sharing";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { warningHaptic } from "../utils/haptics";
 import { documentApi } from "../api";
 import { documentTypeLabels, formatDate } from "../utils/formatUtils";
@@ -25,6 +25,9 @@ import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
 export default function DocumentDetailsScreen({ route, navigation }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const { documentId } = route.params;
 
   const [document, setDocument] = useState(null);
@@ -186,52 +189,54 @@ export default function DocumentDetailsScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 16,
-    gap: 16,
-  },
-  centered: {
-    flex: 1,
-    backgroundColor: colors.background,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  notFound: {
-    color: colors.textMuted,
-    fontSize: 16,
-  },
-  imageBox: {
-    backgroundColor: colors.card,
-    borderRadius: 20,
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    aspectRatio: 3 / 4,
-    resizeMode: "contain",
-  },
-  pressed: {
-    opacity: 0.8,
-  },
-  expandIcon: {
-    position: "absolute",
-    right: 12,
-    bottom: 12,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderRadius: 16,
-    padding: 7,
-  },
-  infoBox: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-  },
-  actions: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  actionButton: {
-    flex: 1,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 16,
+      gap: 16,
+    },
+    centered: {
+      flex: 1,
+      backgroundColor: colors.background,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    notFound: {
+      color: colors.textMuted,
+      fontSize: 16,
+    },
+    imageBox: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      overflow: "hidden",
+    },
+    image: {
+      width: "100%",
+      aspectRatio: 3 / 4,
+      resizeMode: "contain",
+    },
+    pressed: {
+      opacity: 0.8,
+    },
+    expandIcon: {
+      position: "absolute",
+      right: 12,
+      bottom: 12,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      borderRadius: 16,
+      padding: 7,
+    },
+    infoBox: {
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+    },
+    actions: {
+      flexDirection: "row",
+      gap: 12,
+    },
+    actionButton: {
+      flex: 1,
+    },
+  });
+}

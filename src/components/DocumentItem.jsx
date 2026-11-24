@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { documentTypeLabels, formatDate } from "../utils/formatUtils";
 
 export default function DocumentItem({
@@ -11,6 +11,9 @@ export default function DocumentItem({
   imageUrl,
   createdAt,
 }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const navigation = useNavigation();
 
   const pressHandler = () => {
@@ -39,35 +42,37 @@ export default function DocumentItem({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 12,
-    gap: 14,
-  },
-  cardPressed: {
-    opacity: 0.6,
-  },
-  thumbnail: {
-    width: 56,
-    height: 56,
-    borderRadius: 10,
-    backgroundColor: colors.divider,
-  },
-  info: {
-    flex: 1,
-  },
-  title: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  meta: {
-    color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 4,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    card: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      padding: 12,
+      gap: 14,
+    },
+    cardPressed: {
+      opacity: 0.6,
+    },
+    thumbnail: {
+      width: 56,
+      height: 56,
+      borderRadius: 10,
+      backgroundColor: colors.divider,
+    },
+    info: {
+      flex: 1,
+    },
+    title: {
+      color: colors.text,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+    meta: {
+      color: colors.textMuted,
+      fontSize: 12,
+      marginTop: 4,
+    },
+  });
+}

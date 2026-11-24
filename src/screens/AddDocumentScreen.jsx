@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { errorHaptic, successHaptic } from "../utils/haptics";
 import { useAuthContext } from "../contexts/auth/AuthContext";
 import { documentApi } from "../api";
@@ -29,6 +29,9 @@ import AppButton from "../components/AppButton";
 import TypeSelector from "../components/TypeSelector";
 
 export default function AddDocumentScreen({ navigation }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const [imageUri, setImageUri] = useState(null);
   const [type, setType] = useState("invoice");
   const [title, setTitle] = useState("");
@@ -135,7 +138,7 @@ export default function AddDocumentScreen({ navigation }) {
         </Pressable>
       ),
     });
-  }, [navigation, imageUri, type, title, isSaving]);
+  }, [navigation, colors, imageUri, type, title, isSaving]);
 
   return (
     <KeyboardAwareScrollView
@@ -198,71 +201,73 @@ export default function AddDocumentScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: 20,
-    gap: 18,
-  },
-  field: {
-    gap: 6,
-  },
-  label: {
-    color: colors.text,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  preview: {
-    height: 280,
-    borderRadius: 18,
-    backgroundColor: colors.card,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    borderStyle: "dashed",
-    overflow: "hidden",
-  },
-  previewError: {
-    borderColor: colors.error,
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  placeholder: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  placeholderText: {
-    color: colors.textMuted,
-    fontSize: 15,
-  },
-  error: {
-    color: colors.error,
-    fontSize: 13,
-    fontWeight: "500",
-  },
-  buttons: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  button: {
-    flex: 1,
-  },
-  saveButton: {
-    marginRight: 16,
-    backgroundColor: colors.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-  },
-  saveButtonPressed: {
-    opacity: 0.8,
-  },
-  saveText: {
-    color: colors.white,
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    content: {
+      padding: 20,
+      gap: 18,
+    },
+    field: {
+      gap: 6,
+    },
+    label: {
+      color: colors.text,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    preview: {
+      height: 280,
+      borderRadius: 18,
+      backgroundColor: colors.card,
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      borderStyle: "dashed",
+      overflow: "hidden",
+    },
+    previewError: {
+      borderColor: colors.error,
+    },
+    image: {
+      width: "100%",
+      height: "100%",
+      resizeMode: "cover",
+    },
+    placeholder: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+    },
+    placeholderText: {
+      color: colors.textMuted,
+      fontSize: 15,
+    },
+    error: {
+      color: colors.error,
+      fontSize: 13,
+      fontWeight: "500",
+    },
+    buttons: {
+      flexDirection: "row",
+      gap: 12,
+    },
+    button: {
+      flex: 1,
+    },
+    saveButton: {
+      marginRight: 16,
+      backgroundColor: colors.primaryButton,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+    },
+    saveButtonPressed: {
+      opacity: 0.8,
+    },
+    saveText: {
+      color: colors.white,
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+  });
+}
