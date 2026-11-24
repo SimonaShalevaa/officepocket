@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Link } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 
 import FinancesScreen from "../screens/FinancesScreen";
 import TransactionDetailsScreen from "../screens/TransactionDetailsScreen";
@@ -13,6 +13,7 @@ import AppHeader from "./AppHeader";
 const Stack = createNativeStackNavigator();
 
 export default function FinancesNavigator() {
+  const { colors } = useThemeContext();
   return (
     <Stack.Navigator
       initialRouteName="FinancesList"

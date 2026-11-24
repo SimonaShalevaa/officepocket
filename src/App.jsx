@@ -1,8 +1,7 @@
-import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { StatusBar } from "expo-status-bar";
 
+import ThemeProvider from "./contexts/theme/ThemeProvider";
 import AuthProvider from "./contexts/auth/AuthProvider";
 import RootNavigator from "./navigation/RootNavigator";
 import OfflineBanner from "./components/OfflineBanner";
@@ -11,15 +10,12 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <KeyboardProvider>
-        <AuthProvider>
-          <StatusBar style="dark" />
-
-          <NavigationContainer>
+        <ThemeProvider>
+          <AuthProvider>
             <RootNavigator />
-          </NavigationContainer>
-
-          <OfflineBanner />
-        </AuthProvider>
+            <OfflineBanner />
+          </AuthProvider>
+        </ThemeProvider>
       </KeyboardProvider>
     </SafeAreaProvider>
   );

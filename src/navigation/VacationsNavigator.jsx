@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Link } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 
 import VacationsScreen from "../screens/VacationsScreen";
 import VacationDetailsScreen from "../screens/VacationDetailsScreen";
@@ -12,6 +12,7 @@ import AppHeader from "./AppHeader";
 const Stack = createNativeStackNavigator();
 
 export default function VacationsNavigator() {
+  const { colors } = useThemeContext();
   return (
     <Stack.Navigator
       initialRouteName="VacationsList"

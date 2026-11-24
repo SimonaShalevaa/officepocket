@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 
 import DashboardScreen from "../screens/DashboardScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -13,6 +13,7 @@ import VacationsNavigator from "./VacationsNavigator";
 const Tab = createBottomTabNavigator();
 
 export default function TabsNavigator() {
+  const { colors } = useThemeContext();
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
