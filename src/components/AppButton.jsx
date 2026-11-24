@@ -1,6 +1,6 @@
 import { StyleSheet, Pressable, Text } from "react-native";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 
 export default function AppButton({
   title,
@@ -9,6 +9,9 @@ export default function AppButton({
   disabled = false,
   style,
 }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   return (
     <Pressable
       style={({ pressed }) => [
@@ -35,38 +38,40 @@ export default function AppButton({
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    height: 54,
-    backgroundColor: colors.primary,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-  },
-  buttonOutline: {
-    backgroundColor: colors.card,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-  },
-  buttonDanger: {
-    backgroundColor: colors.error,
-  },
-  buttonDisabled: {
-    backgroundColor: colors.divider,
-  },
-  buttonPressed: {
-    opacity: 0.8,
-  },
-  text: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  textOutline: {
-    color: colors.text,
-  },
-  textDisabled: {
-    color: colors.textMuted,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    button: {
+      height: 54,
+      backgroundColor: colors.primaryButton,
+      borderRadius: 14,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 20,
+    },
+    buttonOutline: {
+      backgroundColor: colors.card,
+      borderWidth: 1.5,
+      borderColor: colors.border,
+    },
+    buttonDanger: {
+      backgroundColor: colors.error,
+    },
+    buttonDisabled: {
+      backgroundColor: colors.divider,
+    },
+    buttonPressed: {
+      opacity: 0.8,
+    },
+    text: {
+      color: colors.white,
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    textOutline: {
+      color: colors.text,
+    },
+    textDisabled: {
+      color: colors.textMuted,
+    },
+  });
+}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 
 export default function FormField({
   label,
@@ -10,6 +10,9 @@ export default function FormField({
   secureTextEntry = false,
   ...inputProps
 }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const [isTextVisible, setIsTextVisible] = useState(false);
 
   return (
@@ -45,41 +48,43 @@ export default function FormField({
   );
 }
 
-const styles = StyleSheet.create({
-  field: {
-    gap: 6,
-  },
-  label: {
-    color: colors.text,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  input: {
-    height: 52,
-    backgroundColor: colors.card,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: colors.text,
-  },
-  inputWithIcon: {
-    paddingRight: 52,
-  },
-  eyeButton: {
-    position: "absolute",
-    right: 16,
-    top: 0,
-    bottom: 0,
-    justifyContent: "center",
-  },
-  inputError: {
-    borderColor: colors.error,
-  },
-  error: {
-    color: colors.error,
-    fontSize: 13,
-    fontWeight: "500",
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    field: {
+      gap: 6,
+    },
+    label: {
+      color: colors.text,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    input: {
+      height: 52,
+      backgroundColor: colors.card,
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      fontSize: 16,
+      color: colors.text,
+    },
+    inputWithIcon: {
+      paddingRight: 52,
+    },
+    eyeButton: {
+      position: "absolute",
+      right: 16,
+      top: 0,
+      bottom: 0,
+      justifyContent: "center",
+    },
+    inputError: {
+      borderColor: colors.error,
+    },
+    error: {
+      color: colors.error,
+      fontSize: 13,
+      fontWeight: "500",
+    },
+  });
+}

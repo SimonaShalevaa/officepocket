@@ -1,8 +1,11 @@
 import { StyleSheet, View, Pressable, Text } from "react-native";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 
 export default function CategorySelector({ options, value, onChange }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const pressHandler = (option) => {
     onChange(option === value ? "" : option);
   };
@@ -24,30 +27,32 @@ export default function CategorySelector({ options, value, onChange }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  chip: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  chipActive: {
-    backgroundColor: colors.primaryLight,
-    borderColor: colors.primary,
-  },
-  text: {
-    color: colors.textMuted,
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  textActive: {
-    color: colors.primary,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+    },
+    chip: {
+      paddingVertical: 8,
+      paddingHorizontal: 14,
+      borderRadius: 20,
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    chipActive: {
+      backgroundColor: colors.primaryLight,
+      borderColor: colors.primary,
+    },
+    text: {
+      color: colors.textMuted,
+      fontSize: 14,
+      fontWeight: "600",
+    },
+    textActive: {
+      color: colors.primary,
+    },
+  });
+}

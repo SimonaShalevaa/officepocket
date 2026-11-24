@@ -3,9 +3,12 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { colors } from "../theme";
+import { useThemeContext } from "../contexts/theme/ThemeContext";
 
 export default function AuthLayout({ title, subtitle, children, footer }) {
+  const { colors } = useThemeContext();
+  const styles = createStyles(colors);
+
   const { top, bottom } = useSafeAreaInsets();
 
   return (
@@ -33,54 +36,56 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
   );
 }
 
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  content: {
-    flexGrow: 1,
-    justifyContent: "center",
-    paddingHorizontal: 24,
-    paddingTop: 24,
-  },
-  brand: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 40,
-  },
-  logo: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    backgroundColor: colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  brandName: {
-    color: colors.text,
-    fontSize: 22,
-    fontWeight: "bold",
-  },
-  title: {
-    color: colors.text,
-    fontSize: 30,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    color: colors.textMuted,
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 8,
-  },
-  form: {
-    gap: 18,
-    marginTop: 32,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 28,
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    flex: {
+      flex: 1,
+    },
+    content: {
+      flexGrow: 1,
+      justifyContent: "center",
+      paddingHorizontal: 24,
+      paddingTop: 24,
+    },
+    brand: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      marginBottom: 40,
+    },
+    logo: {
+      width: 48,
+      height: 48,
+      borderRadius: 14,
+      backgroundColor: colors.primaryButton,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    brandName: {
+      color: colors.text,
+      fontSize: 22,
+      fontWeight: "bold",
+    },
+    title: {
+      color: colors.text,
+      fontSize: 30,
+      fontWeight: "bold",
+    },
+    subtitle: {
+      color: colors.textMuted,
+      fontSize: 15,
+      lineHeight: 22,
+      marginTop: 8,
+    },
+    form: {
+      gap: 18,
+      marginTop: 32,
+    },
+    footer: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 28,
+    },
+  });
+}
