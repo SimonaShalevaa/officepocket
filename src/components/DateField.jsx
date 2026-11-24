@@ -4,6 +4,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useThemeContext } from "../contexts/theme/ThemeContext";
+import { lightColors } from "../theme";
 import { formatDate, toDateString } from "../utils/formatUtils";
 
 export default function DateField({ label, value, onChange, error }) {
@@ -39,8 +40,8 @@ export default function DateField({ label, value, onChange, error }) {
         <DateTimePicker
           value={value}
           mode="date"
-          positiveButton={{ label: "OK", textColor: colors.primary }}
-          negativeButton={{ label: "Отказ", textColor: colors.textMuted }}
+          positiveButton={{ label: "OK", textColor: lightColors.primary }}
+          negativeButton={{ label: "Отказ", textColor: lightColors.textMuted }}
           onValueChange={valueChangeHandler}
           onDismiss={() => setIsPickerVisible(false)}
         />
