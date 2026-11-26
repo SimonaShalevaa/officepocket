@@ -15,14 +15,18 @@ import { useThemeContext } from "../contexts/theme/ThemeContext";
 import { selectionHaptic } from "../utils/haptics";
 import { listReducer, initialListState } from "../reducers/listReducer";
 import { transactionApi } from "../api";
-import { formatMoney } from "../utils/formatUtils";
+import { formatMoney, toDateString } from "../utils/formatUtils";
 import {
-  monthNames,
-  calculateMonthSummary,
+  periodTypeLabels,
+  getPeriodRange,
+  getPeriodTitle,
+  calculateSummary,
   calculatePending,
 } from "../utils/summaryUtils";
 
 import DetailsRow from "../components/DetailsRow";
+import TypeSelector from "../components/TypeSelector";
+import DateField from "../components/DateField";
 import LoadingView from "../components/LoadingView";
 import ErrorView from "../components/ErrorView";
 
@@ -34,8 +38,13 @@ export default function DashboardScreen({ navigation }) {
 
   const [state, dispatch] = useReducer(listReducer, initialListState);
   const { items: transactions, isLoading, isRefreshing, error } = state;
+  const [periodType, setPeriodType] = useState("month");
   const [year, setYear] = useState(today.getFullYear());
-  const [month, setMonth] = useState(today.getMonth());
+  const [period, setPeriod] = useState(today.getMonth());
+  const [customStart, setCustomStart] = useState(
+    new Date(today.getFullYear(), today.getMonth(), 1),
+  );
+  const [customEnd, setCustomEnd] = useState(today);
 
   const loadTransactions = async () => {
     try {
@@ -65,32 +74,67 @@ export default function DashboardScreen({ navigation }) {
     await loadTransactions();
   };
 
-  const isCurrentMonth =
-    year === today.getFullYear() && month === today.getMonth();
+  const currentPeriods = {
+    month: today.getMonth(),
+    quarter: Math.floor(today.getMonth() / 3),
+    year: 0,
+  };
+  const periodsInYear = { month: 12, quarter: 4 };
 
-  const previousMonthHandler = () => {
+  const isCurrentPeriod =
+    year === today.getFullYear() &&
+    (periodType === "year" || period === currentPeriods[periodType]);
+
+  const periodTypeChangeHandler = (type) => {
+    selectionHaptic();
+    setPeriodType(type);
+    setYear(today.getFullYear());
+    setPeriod(currentPeriods[type] ?? 0);
+  };
+
+  const previousPeriodHandler = () => {
     selectionHaptic();
 
-    if (month === 0) {
-      setMonth(11);
+    if (periodType === "year" || period === 0) {
       setYear(year - 1);
-    } else {
-      setMonth(month - 1);
+    }
+
+    if (periodType !== "year") {
+      setPeriod(period === 0 ? periodsInYear[periodType] - 1 : period - 1);
     }
   };
 
-  const nextMonthHandler = () => {
-    if (isCurrentMonth) {
+  const nextPeriodHandler = () => {
+    if (isCurrentPeriod) {
       return;
     }
 
     selectionHaptic();
 
-    if (month === 11) {
-      setMonth(0);
+    const lastPeriod = periodsInYear[periodType] - 1;
+
+    if (periodType === "year" || period === lastPeriod) {
       setYear(year + 1);
-    } else {
-      setMonth(month + 1);
+    }
+
+    if (periodType !== "year") {
+      setPeriod(period === lastPeriod ? 0 : period + 1);
+    }
+  };
+
+  const customStartChangeHandler = (date) => {
+    setCustomStart(date);
+
+    if (date > customEnd) {
+      setCustomEnd(date);
+    }
+  };
+
+  const customEndChangeHandler = (date) => {
+    setCustomEnd(date);
+
+    if (date < customStart) {
+      setCustomStart(date);
     }
   };
 
@@ -102,7 +146,19 @@ export default function DashboardScreen({ navigation }) {
     return <ErrorView message={error} onRetry={retryHandler} />;
   }
 
-  const summary = calculateMonthSummary(transactions, year, month);
+  const range =
+    periodType === "custom"
+      ? {
+          startDate: toDateString(customStart),
+          endDate: toDateString(customEnd),
+        }
+      : getPeriodRange(periodType, year, period);
+
+  const summary = calculateSummary(
+    transactions,
+    range.startDate,
+    range.endDate,
+  );
   const pending = calculatePending(transactions);
   const isPositive = summary.balance >= 0;
 
@@ -118,42 +174,67 @@ export default function DashboardScreen({ navigation }) {
         />
       }
     >
-      <View style={styles.monthBox}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.arrow,
-            pressed && styles.arrowPressed,
-          ]}
-          onPress={previousMonthHandler}
-          hitSlop={8}
-        >
-          <Ionicons name="chevron-back" size={20} color={colors.primary} />
-        </Pressable>
+      <TypeSelector
+        value={periodType}
+        onChange={periodTypeChangeHandler}
+        labels={periodTypeLabels}
+      />
 
-        <Text style={styles.monthText}>
-          {monthNames[month]} {year}
-        </Text>
+      {periodType === "custom" ? (
+        <View style={styles.row}>
+          <View style={styles.dateColumn}>
+            <DateField
+              label="От"
+              value={customStart}
+              onChange={customStartChangeHandler}
+            />
+          </View>
+          <View style={styles.dateColumn}>
+            <DateField
+              label="До"
+              value={customEnd}
+              onChange={customEndChangeHandler}
+            />
+          </View>
+        </View>
+      ) : (
+        <View style={styles.monthBox}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.arrow,
+              pressed && styles.arrowPressed,
+            ]}
+            onPress={previousPeriodHandler}
+            hitSlop={8}
+          >
+            <Ionicons name="chevron-back" size={20} color={colors.primary} />
+          </Pressable>
 
-        <Pressable
-          style={({ pressed }) => [
-            styles.arrow,
-            isCurrentMonth && styles.arrowDisabled,
-            pressed && !isCurrentMonth && styles.arrowPressed,
-          ]}
-          onPress={nextMonthHandler}
-          disabled={isCurrentMonth}
-          hitSlop={8}
-        >
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color={isCurrentMonth ? colors.border : colors.primary}
-          />
-        </Pressable>
-      </View>
+          <Text style={styles.monthText}>
+            {getPeriodTitle(periodType, year, period)}
+          </Text>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.arrow,
+              isCurrentPeriod && styles.arrowDisabled,
+              pressed && !isCurrentPeriod && styles.arrowPressed,
+            ]}
+            onPress={nextPeriodHandler}
+            disabled={isCurrentPeriod}
+            hitSlop={8}
+          >
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={isCurrentPeriod ? colors.border : colors.primary}
+            />
+          </Pressable>
+        </View>
+      )}
 
       <View style={styles.balanceCard}>
-        <Text style={styles.cardLabel}>Баланс за месеца</Text>
+        <Text style={styles.cardLabel}>Баланс за периода</Text>
         <Text
           style={[
             styles.balance,
@@ -230,6 +311,9 @@ function createStyles(colors) {
       padding: 16,
       gap: 12,
     },
+    dateColumn: {
+      flex: 1,
+    },
     monthBox: {
       flexDirection: "row",
       alignItems: "center",
@@ -259,10 +343,10 @@ function createStyles(colors) {
     },
     balanceCard: {
       backgroundColor: colors.card,
-      borderRadius: 20,
-      paddingVertical: 22,
+      borderRadius: 16,
+      paddingVertical: 12,
       alignItems: "center",
-      gap: 6,
+      gap: 2,
     },
     cardLabel: {
       color: colors.textMuted,
@@ -270,7 +354,7 @@ function createStyles(colors) {
       fontWeight: "600",
     },
     balance: {
-      fontSize: 32,
+      fontSize: 26,
       fontWeight: "bold",
     },
     positive: {

@@ -15,7 +15,11 @@ export default function TypeSelector({ value, onChange, labels = typeLabels }) {
           style={[styles.option, value === type && styles.optionActive]}
           onPress={() => onChange(type)}
         >
-          <Text style={[styles.text, value === type && styles.textActive]}>
+          <Text
+            style={[styles.text, value === type && styles.textActive]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+          >
             {label}
           </Text>
         </Pressable>
@@ -37,6 +41,7 @@ function createStyles(colors) {
       flex: 1,
       height: 40,
       borderRadius: 9,
+      paddingHorizontal: 4,
       alignItems: "center",
       justifyContent: "center",
     },
