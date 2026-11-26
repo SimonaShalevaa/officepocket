@@ -201,12 +201,6 @@ export default function ProfileScreen({ navigation }) {
       <Text style={styles.email}>{user.email}</Text>
 
       <AppButton
-        title="Редактирай профила"
-        onPress={() => navigation.navigate("EditProfile")}
-        style={styles.editButton}
-      />
-
-      <AppButton
         title="Изход"
         variant="outline"
         onPress={logoutHandler}
@@ -278,10 +272,6 @@ function createStyles(colors) {
       marginTop: 4,
     },
     logoutButton: {
-      alignSelf: "stretch",
-      marginTop: 12,
-    },
-    editButton: {
       alignSelf: "stretch",
       marginTop: 32,
     },

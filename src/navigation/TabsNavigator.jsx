@@ -108,11 +108,11 @@ export default function TabsNavigator() {
           headerRight: () => (
             <Link
               screen="Settings"
-              accessibilityLabel="Настройки"
+              accessibilityLabel="Настройки на профила"
               style={styles.settingsButton}
             >
               <Ionicons
-                name="settings-outline"
+                name="person-circle-outline"
                 size={26}
                 color={colors.primary}
               />

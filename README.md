@@ -117,7 +117,7 @@ OfficePocket helps a small business owner keep everyday office work in one place
 - Yes. **Finances**, **Documents** and **Vacations** each have their own **Stack inside the Tab**:
   - list screen → details screen.
 - Form screens, Settings and Pending payments open on top of the tabs in the Root Stack.
-- The Profile tab has a settings button (gear icon) in the header.
+- The Profile tab has a button in the header that opens Settings (edit profile, change password, theme).
 
 ## 5. List → Details Flow
 

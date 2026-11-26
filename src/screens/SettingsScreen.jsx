@@ -37,6 +37,19 @@ export default function SettingsScreen({ navigation }) {
       <Text style={styles.sectionTitle}>ПРОФИЛ</Text>
       <View style={styles.list}>
         <Pressable
+          style={({ pressed }) => [
+            styles.row,
+            styles.rowBorder,
+            pressed && styles.pressed,
+          ]}
+          onPress={() => navigation.navigate("EditProfile")}
+        >
+          <Ionicons name="person-outline" size={20} color={colors.textMuted} />
+          <Text style={styles.rowText}>Редактирай профила</Text>
+          <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+        </Pressable>
+
+        <Pressable
           style={({ pressed }) => [styles.row, pressed && styles.pressed]}
           onPress={() => navigation.navigate("ChangePassword")}
         >
@@ -90,6 +103,10 @@ function createStyles(colors) {
       gap: 12,
       paddingHorizontal: 16,
       paddingVertical: 16,
+    },
+    rowBorder: {
+      borderBottomWidth: 1,
+      borderBottomColor: colors.divider,
     },
     pressed: {
       opacity: 0.6,
