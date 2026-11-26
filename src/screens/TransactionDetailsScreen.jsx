@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,11 +6,14 @@ import {
   ScrollView,
   Alert,
   RefreshControl,
+  Pressable,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Clipboard from "expo-clipboard";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useThemeContext } from "../contexts/theme/ThemeContext";
-import { warningHaptic } from "../utils/haptics";
+import { warningHaptic, successHaptic } from "../utils/haptics";
 import { transactionApi } from "../api";
 import { typeLabels, formatAmount, formatDate } from "../utils/formatUtils";
 
@@ -29,6 +32,17 @@ export default function TransactionDetailsScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+
+  useEffect(() => {
+    if (!isCopied) {
+      return;
+    }
+
+    const timer = setTimeout(() => setIsCopied(false), 2000);
+
+    return () => clearTimeout(timer);
+  }, [isCopied]);
 
   const loadTransaction = async () => {
     try {
@@ -61,6 +75,14 @@ export default function TransactionDetailsScreen({ route, navigation }) {
   const retryHandler = () => {
     setIsLoading(true);
     loadTransaction();
+  };
+
+  const copyAmountHandler = async () => {
+    const amountText = transaction.amount.toFixed(2).replace(".", ",");
+
+    await Clipboard.setStringAsync(amountText);
+    successHaptic();
+    setIsCopied(true);
   };
 
   const editHandler = () => {
@@ -123,8 +145,19 @@ export default function TransactionDetailsScreen({ route, navigation }) {
     >
       <View style={styles.summary}>
         <Text style={styles.summaryLabel}>Сума</Text>
-        <Text style={[styles.amount, isIncome && styles.amountIncome]}>
-          {formatAmount(transaction.amount, transaction.type)}
+        <Pressable
+          style={({ pressed }) => [styles.amountRow, pressed && styles.pressed]}
+          onPress={copyAmountHandler}
+          onLongPress={copyAmountHandler}
+          accessibilityLabel="Копирай сумата"
+        >
+          <Text style={[styles.amount, isIncome && styles.amountIncome]}>
+            {formatAmount(transaction.amount, transaction.type)}
+          </Text>
+          <Ionicons name="copy-outline" size={20} color={colors.textMuted} />
+        </Pressable>
+        <Text style={[styles.copied, !isCopied && styles.copiedHidden]}>
+          Копирано ✓
         </Text>
 
         <View style={[styles.badge, !transaction.isPaid && styles.badgePending]}>
@@ -185,6 +218,22 @@ function createStyles(colors) {
       paddingVertical: 28,
       alignItems: "center",
       gap: 8,
+    },
+    amountRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+    },
+    pressed: {
+      opacity: 0.6,
+    },
+    copied: {
+      color: colors.primary,
+      fontSize: 13,
+      fontWeight: "600",
+    },
+    copiedHidden: {
+      opacity: 0,
     },
     summaryLabel: {
       color: colors.textMuted,
