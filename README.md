@@ -19,7 +19,7 @@ You can also create your own account from the Register screen.
 - React Navigation (native stack + bottom tabs)
 - Supabase (authentication, database, file storage)
 - Axios (requests to the Supabase REST API)
-- Expo modules: Image Picker, Secure Store, Haptics, Sharing, File System, System UI
+- Expo modules: Image Picker, Secure Store, Haptics, Sharing, File System, System UI, Clipboard, Splash Screen
 - DateTimePicker
 - React Native Gesture Handler + Reanimated (pinch to zoom)
 - NetInfo (offline banner)
@@ -195,13 +195,14 @@ Errors are shown under the field in red, and the phone vibrates shortly.
 ### Used Native Feature(s)
 
 - **Camera / Image Picker** (expo-image-picker)
-- Also used: **Secure Store**, **Haptics**, **Sharing + File System**, **Date Picker**, **Gestures (pinch to zoom)**, **NetInfo**, **System UI (dark mode)**
+- Also used: **Secure Store**, **Haptics**, **Sharing + File System**, **Clipboard**, **Date Picker**, **Gestures (pinch to zoom)**, **NetInfo**, **System UI (dark mode)**
 
 ### Usage Description
 
 - **Camera / Image Picker** – in "New document" the user takes a photo of an invoice or chooses one from the gallery. The same is used for the profile picture. The app asks for camera permission and explains why. If access is denied, it offers a button to open the phone settings.
 - **Secure Store** – keeps the refresh token safe for automatic login.
 - **Haptics** – short vibration on save, delete, form errors and month change.
+- **Clipboard** – on the record details screen the user taps the amount to copy it (for example, to paste it in a banking app).
 - **Sharing + File System** – on the document details screen the photo is downloaded to the phone cache and shared with other apps (Viber, email, etc.).
 - **Date Picker** – native calendar for record and vacation dates.
 - **Gestures** – document photos open in full screen and can be zoomed with two fingers, moved with one finger, or zoomed with a double tap.
