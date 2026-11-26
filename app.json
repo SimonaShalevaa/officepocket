@@ -11,15 +11,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#1F6F5C",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "com.simonashaleva.officepocket",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "package": "com.simonashaleva.officepocket"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,7 +26,8 @@
         "expo-image-picker",
         {
           "cameraPermission": "OfficePocket използва камерата, за да снимате фактури, бележки и договори.",
-          "photosPermission": "OfficePocket използва галерията, за да прикачите снимка на документ."
+          "photosPermission": "OfficePocket използва галерията, за да прикачите снимка на документ.",
+          "microphonePermission": false
         }
       ],
       "expo-secure-store",
@@ -43,6 +41,19 @@
                 "light": "#1F6F5C"
               }
             }
+          }
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 120,
+          "resizeMode": "contain",
+          "backgroundColor": "#1F6F5C",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "backgroundColor": "#121614"
           }
         }
       ]
