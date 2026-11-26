@@ -8,8 +8,8 @@ React Native exam project – SoftUni, 2026.
 
 - **APK (Android):** _link will be added here_
 - **Demo account:**
-  - Email: `_add demo email_`
-  - Password: `_add demo password_`
+  - Email: `test@gmail.com`
+  - Password: `123456`
 
 You can also create your own account from the Register screen.
 
