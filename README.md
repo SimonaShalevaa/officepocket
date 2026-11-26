@@ -92,7 +92,7 @@ OfficePocket helps a small business owner keep everyday office work in one place
 1. **When the app starts**, it shows a loading indicator and checks if there is a saved session.
 2. **The authentication status is checked** by reading the refresh token from Secure Store. If it exists, the app asks Supabase for a new access token.
 3. **On successful login or registration**, the access token is kept in memory and added to every request. The refresh token is saved in Secure Store. The user is taken to the Dashboard.
-4. **On logout** (Settings → Logout, with confirmation), the tokens are removed from memory and from Secure Store, and the user goes back to the Login screen.
+4. **On logout** (Profile → Logout, with confirmation), the tokens are removed from memory and from Secure Store, and the user goes back to the Login screen.
 
 ### Session Persistence
 

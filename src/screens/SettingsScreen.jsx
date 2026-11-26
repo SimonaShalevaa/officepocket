@@ -1,16 +1,8 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, ScrollView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import appConfig from "../../app.json";
 import { useThemeContext } from "../contexts/theme/ThemeContext";
-import { useAuthContext } from "../contexts/auth/AuthContext";
 import { selectionHaptic } from "../utils/haptics";
 
 import TypeSelector from "../components/TypeSelector";
@@ -25,22 +17,9 @@ export default function SettingsScreen({ navigation }) {
   const { colors, themeMode, setThemeMode } = useThemeContext();
   const styles = createStyles(colors);
 
-  const { logout } = useAuthContext();
-
   const themeChangeHandler = (mode) => {
     selectionHaptic();
     setThemeMode(mode);
-  };
-
-  const logoutHandler = () => {
-    Alert.alert(
-      "Изход",
-      "Сигурни ли сте, че искате да излезете от профила си?",
-      [
-        { text: "Отказ", style: "cancel" },
-        { text: "Изход", style: "destructive", onPress: logout },
-      ],
-    );
   };
 
   return (
@@ -58,11 +37,7 @@ export default function SettingsScreen({ navigation }) {
       <Text style={styles.sectionTitle}>ПРОФИЛ</Text>
       <View style={styles.list}>
         <Pressable
-          style={({ pressed }) => [
-            styles.row,
-            styles.rowBorder,
-            pressed && styles.pressed,
-          ]}
+          style={({ pressed }) => [styles.row, pressed && styles.pressed]}
           onPress={() => navigation.navigate("ChangePassword")}
         >
           <Ionicons
@@ -72,14 +47,6 @@ export default function SettingsScreen({ navigation }) {
           />
           <Text style={styles.rowText}>Смяна на парола</Text>
           <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-        </Pressable>
-
-        <Pressable
-          style={({ pressed }) => [styles.row, pressed && styles.pressed]}
-          onPress={logoutHandler}
-        >
-          <Ionicons name="log-out-outline" size={20} color={colors.error} />
-          <Text style={[styles.rowText, styles.logoutText]}>Изход</Text>
         </Pressable>
       </View>
 
@@ -124,10 +91,6 @@ function createStyles(colors) {
       paddingHorizontal: 16,
       paddingVertical: 16,
     },
-    rowBorder: {
-      borderBottomWidth: 1,
-      borderBottomColor: colors.divider,
-    },
     pressed: {
       opacity: 0.6,
     },
@@ -135,10 +98,6 @@ function createStyles(colors) {
       flex: 1,
       color: colors.text,
       fontSize: 15,
-    },
-    logoutText: {
-      color: colors.error,
-      fontWeight: "600",
     },
     version: {
       color: colors.textMuted,
