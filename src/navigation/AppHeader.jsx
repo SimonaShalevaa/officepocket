@@ -1,25 +1,30 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Header,
   HeaderBackButton,
   getHeaderTitle,
 } from "@react-navigation/elements";
 
+import OfflineBanner from "../components/OfflineBanner";
+
 export default function AppHeader({ navigation, route, options, back }) {
   return (
-    <Header
-      {...options}
-      title={getHeaderTitle(options, route.name)}
-      headerTitleContainerStyle={styles.titleContainer}
-      headerRightContainerStyle={styles.rightContainer}
-      headerLeft={
-        back
-          ? (props) => (
-              <HeaderBackButton {...props} onPress={navigation.goBack} />
-            )
-          : undefined
-      }
-    />
+    <View>
+      <Header
+        {...options}
+        title={getHeaderTitle(options, route.name)}
+        headerTitleContainerStyle={styles.titleContainer}
+        headerRightContainerStyle={styles.rightContainer}
+        headerLeft={
+          back
+            ? (props) => (
+                <HeaderBackButton {...props} onPress={navigation.goBack} />
+              )
+            : undefined
+        }
+      />
+      <OfflineBanner />
+    </View>
   );
 }
 

@@ -11,6 +11,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 import FinancesNavigator from "./FinancesNavigator";
 import DocumentsNavigator from "./DocumentsNavigator";
 import VacationsNavigator from "./VacationsNavigator";
+import AppHeader from "./AppHeader";
 
 const Tab = createBottomTabNavigator();
 
@@ -21,6 +22,7 @@ export default function TabsNavigator() {
       initialRouteName="Dashboard"
       backBehavior="history"
       screenOptions={{
+        header: (props) => <AppHeader {...props} />,
         headerStyle: { backgroundColor: colors.background },
         headerTintColor: colors.text,
         headerTitleStyle: { fontWeight: "bold" },
