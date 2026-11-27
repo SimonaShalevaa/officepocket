@@ -7,12 +7,14 @@ import { authApi, avatarApi } from "../../api";
 import {
   setAccessToken,
   setOnSessionExpired,
+  isSessionInvalid,
   REFRESH_TOKEN_KEY,
 } from "../../api/api";
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isRestoring, setIsRestoring] = useState(true);
+  const [restoreError, setRestoreError] = useState(false);
 
   useEffect(() => {
     restoreSession();
@@ -44,10 +46,20 @@ export default function AuthProvider({ children }) {
         await saveSession(session);
       }
     } catch (error) {
-      await clearSession();
+      if (isSessionInvalid(error)) {
+        await clearSession();
+      } else {
+        setRestoreError(true);
+      }
     } finally {
       setIsRestoring(false);
     }
+  };
+
+  const retryRestore = () => {
+    setRestoreError(false);
+    setIsRestoring(true);
+    restoreSession();
   };
 
   const login = async (email, password) => {
@@ -109,6 +121,8 @@ export default function AuthProvider({ children }) {
     user,
     isAuthenticated: !!user,
     isRestoring,
+    restoreError,
+    retryRestore,
     login,
     register,
     logout,

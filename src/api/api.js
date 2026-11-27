@@ -43,6 +43,12 @@ export function setOnSessionExpired(callback) {
   onSessionExpired = callback;
 }
 
+export function isSessionInvalid(error) {
+  const status = error.response?.status;
+
+  return status === 400 || status === 401;
+}
+
 function isTokenExpired(error) {
   const status = error.response?.status;
   const message = String(error.response?.data?.message ?? "").toLowerCase();
@@ -84,7 +90,7 @@ async function handleResponseError(error) {
 
     return axios(originalRequest);
   } catch (refreshError) {
-    if (onSessionExpired) {
+    if (isSessionInvalid(refreshError) && onSessionExpired) {
       onSessionExpired();
     }
 

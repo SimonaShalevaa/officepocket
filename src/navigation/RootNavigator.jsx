@@ -17,18 +17,29 @@ import SettingsScreen from "../screens/SettingsScreen";
 import PendingPaymentsScreen from "../screens/PendingPaymentsScreen";
 import TransactionDetailsScreen from "../screens/TransactionDetailsScreen";
 import AppHeader from "./AppHeader";
+import ErrorView from "../components/ErrorView";
 
 const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
   const { colors, isDarkMode, navigationTheme } = useThemeContext();
-  const { isAuthenticated, isRestoring } = useAuthContext();
+  const { isAuthenticated, isRestoring, restoreError, retryRestore } =
+    useAuthContext();
 
   if (isRestoring) {
     return (
       <View style={[styles.loading, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
+    );
+  }
+
+  if (restoreError) {
+    return (
+      <ErrorView
+        message="Няма връзка със сървъра. Проверете интернета и опитайте отново."
+        onRetry={retryRestore}
+      />
     );
   }
 
