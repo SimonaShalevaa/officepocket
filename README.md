@@ -206,7 +206,7 @@ Errors are shown under the field in red, and the phone vibrates shortly.
 - **Sharing + File System** – on the document details screen the photo is downloaded to the phone cache and shared with other apps (Viber, email, etc.).
 - **Date Picker** – native calendar for record and vacation dates.
 - **Gestures** – document photos open in full screen and can be zoomed with two fingers, moved with one finger, or zoomed with a double tap.
-- **NetInfo** – a red banner "Няма връзка с интернет" appears when the phone is offline.
+- **NetInfo** – a red banner "Няма връзка с интернет" appears under the screen title when the phone is offline.
 - **Dark mode** – the app follows the phone setting (`useColorScheme`) or the choice in Settings (System / Light / Dark). The choice is saved with AsyncStorage.
 
 ## 10. Typical User Flow
@@ -223,7 +223,8 @@ Errors are shown under the field in red, and the phone vibrates shortly.
 
 - **Authentication errors:** clear messages for wrong email or password, existing email, weak password and no internet. If the session cannot be renewed, the user is logged out with a message.
 - **Network or data errors:** each list and details screen shows an error message with a **"Try again"** button. Failed saves or deletes show an alert, and the data on the screen is kept.
-- **No internet:** a banner is shown at the bottom of the screen until the connection is back.
+- **No internet:** a red banner is shown under the screen title until the connection is back. Lists that are already loaded stay on the screen.
+- **Starting the app without internet:** the user is not logged out. A "Няма връзка със сървъра" screen is shown with a **"Try again"** button, and after the connection is back the user continues without a new login.
 - **Empty or missing data:** lists show a friendly empty message (for example "No records yet"). If an item is not found, the details screen shows "not found". The Dashboard shows 0,00 € for months without records.
 
 ## Project Structure
